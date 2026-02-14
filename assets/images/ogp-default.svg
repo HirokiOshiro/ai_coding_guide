@@ -1,0 +1,27 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">AI Coding Companion Guide OGP Image</title>
+  <desc id="desc">AI Coding Companion ガイドのOGP用画像。生成AIと一緒にコードを書くための実践ガイド。</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="630" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#1A1A1A"/>
+      <stop offset="1" stop-color="#1E3A8A"/>
+    </linearGradient>
+    <linearGradient id="line" x1="220" y1="0" x2="980" y2="630" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#60A5FA" stop-opacity="0.05"/>
+      <stop offset="1" stop-color="#60A5FA" stop-opacity="0.28"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <circle cx="1060" cy="-90" r="330" fill="#60A5FA" fill-opacity="0.10"/>
+  <rect x="140" y="80" width="920" height="470" rx="24" fill="url(#line)" stroke="#BFDBFE" stroke-opacity="0.25"/>
+
+  <text x="200" y="180" fill="#93C5FD" font-size="28" font-family="'IBM Plex Mono', 'Noto Sans JP', sans-serif" letter-spacing="6">AI CODING COMPANION GUIDE</text>
+  <text x="200" y="300" fill="#F3F4F6" font-size="72" font-weight="700" font-family="'Noto Serif JP', 'Noto Sans JP', serif">生成AIと一緒に</text>
+  <text x="200" y="390" fill="#DBEAFE" font-size="72" font-weight="700" font-family="'Noto Serif JP', 'Noto Sans JP', serif">コードを書く</text>
+
+  <rect x="200" y="450" width="470" height="56" rx="10" fill="#1D4ED8" fill-opacity="0.28" stroke="#60A5FA" stroke-opacity="0.45"/>
+  <text x="224" y="487" fill="#E0E7FF" font-size="24" font-family="'Noto Sans JP', sans-serif">Claude Code 実践ガイド</text>
+
+  <text x="200" y="560" fill="#9CA3AF" font-size="22" font-family="'Noto Sans JP', sans-serif">oshirohiroki.github.io</text>
+</svg>

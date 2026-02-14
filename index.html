@@ -1,0 +1,1345 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Coding Companion — 生成AIと一緒にコードを書くための実践ガイド</title>
+<meta name="description" content="Claude Codeを中心に、生成AIを使ったコーディングの実践知識を非エンジニア向けに整理した参照ガイド。CLAUDE.md、コンテキスト管理、Skills、Agents、VS Code、GitHubの使い方まで。">
+<meta name="robots" content="index,follow">
+<meta name="theme-color" content="#1a1a1a">
+<link rel="canonical" href="https://oshirohiroki.github.io/">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:title" content="AI Coding Companion — 生成AIと一緒にコードを書くための実践ガイド">
+<meta property="og:description" content="Claude Codeの実践知識を、AIコーディング初学者向けに整理した学習ガイド。">
+<meta property="og:site_name" content="AI Coding Companion Guide">
+<meta property="og:url" content="https://oshirohiroki.github.io/">
+<meta property="og:image" content="https://oshirohiroki.github.io/assets/images/ogp-default.svg">
+<meta property="og:image:secure_url" content="https://oshirohiroki.github.io/assets/images/ogp-default.svg">
+<meta property="og:image:type" content="image/svg+xml">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="AI Coding Companion Guide — 生成AIと一緒にコードを書くための実践ガイド">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="AI Coding Companion — 生成AIと一緒にコードを書くための実践ガイド">
+<meta name="twitter:description" content="Claude Codeの実践知識を、AIコーディング初学者向けに整理した学習ガイド。">
+<meta name="twitter:image" content="https://oshirohiroki.github.io/assets/images/ogp-default.svg">
+<meta name="twitter:image:alt" content="AI Coding Companion Guide — 生成AIと一緒にコードを書くための実践ガイド">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%A4%96%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&family=Noto+Serif+JP:wght@400;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body>
+
+<a href="#main-content" class="skip-link">本文へスキップ</a>
+
+<!-- ═══════════════ Hero ═══════════════ -->
+<header class="hero">
+  <div class="hero-inner">
+    <div class="hero-tag">AI Coding Companion Guide</div>
+    <h1>生成AIと一緒に<br><em>コードを書く</em></h1>
+    <p class="hero-desc">
+      「コードを書く前に考えるべきこと」の続編。<br>
+      考えるべきことを整理したら、次はそれをAIにどう伝え、どう協働するか。<br>
+      Claude Codeを中心に、生成AIとのコーディングを実践するための知識地図。
+    </p>
+    <div class="hero-companion">COMPANION TO: Vibe Coding Preflight Guide</div>
+  </div>
+</header>
+
+<!-- ═══════════════ TOC ═══════════════ -->
+<nav class="toc-bar" aria-label="ページ内目次">
+  <div class="toc-inner">
+    <a href="#intro" class="toc-link">考え方</a>
+    <a href="#environment" class="toc-link">環境を整える</a>
+    <a href="#claudemd" class="toc-link">CLAUDE.md</a>
+    <a href="#context" class="toc-link">コンテキスト管理</a>
+    <a href="#extensions" class="toc-link">拡張機能</a>
+    <a href="#workflow" class="toc-link">開発ワークフロー</a>
+    <a href="#security" class="toc-link">情報管理</a>
+    <a href="#checklist" class="toc-link">✓ チェックリスト</a>
+    <a href="#keywords" class="toc-link">用語索引</a>
+  </div>
+</nav>
+
+<main class="main" id="main-content">
+
+<!-- ═══════════════ Section: Intro ═══════════════ -->
+<section class="section" id="intro">
+  <div class="section-num">INTRODUCTION</div>
+  <h2>AIとコードを書くとは、どういうことか</h2>
+  <p class="section-subtitle">「AIにコードを書かせる」のではなく、「AIと一緒に考える」ための前提</p>
+
+  <div class="epigraph">
+    <p>生成AIは「超高速のタイピスト」ではなく、「文脈を読んで動く共同作業者」だと考えるとよい。</p>
+    <p>優秀な共同作業者であっても、何を作りたいかを伝えなければ、期待通りのものは出てこない。</p>
+    <p>伝え方の技術こそが、AIコーディングにおける人間側の核心的な能力になる。</p>
+  </div>
+
+  <p>前編「Vibe Coding Preflight Guide」では、コードを書く前に考えるべきこと — 要件定義、設計、品質、安全性の基礎 — を整理しました。本ガイドは、それらを<strong>AIにどう伝え、どう協働するか</strong>という実践面に踏み込みます。</p>
+
+  <p>中心に据えるのは、Anthropicが開発する<strong>Claude Code</strong>です。Claude Codeはターミナル上で動作するエージェント型のコーディングツールで、ファイルの読み書き、コマンド実行、Git操作、テスト実行など、開発者がコマンドラインで行う作業のほぼすべてを自然言語の指示で実行できます。</p>
+
+  <div class="concept-flow">
+    <div class="concept-box">
+      <div class="label">THINK</div>
+      <div class="name">設計・要件</div>
+      <div class="desc">何を、なぜ、どう作るか</div>
+    </div>
+    <div class="concept-arrow">→</div>
+    <div class="concept-box" style="border-color: var(--accent); box-shadow: 0 0 0 2px rgba(29,78,216,0.1);">
+      <div class="label" style="color:var(--accent);">COMMUNICATE</div>
+      <div class="name" style="color:var(--accent);">AIへの伝達</div>
+      <div class="desc">← 本ガイドの範囲</div>
+    </div>
+    <div class="concept-arrow">→</div>
+    <div class="concept-box">
+      <div class="label">BUILD</div>
+      <div class="name">実装・検証</div>
+      <div class="desc">コード生成と動作確認</div>
+    </div>
+  </div>
+
+  <p>AIコーディングの成否を分けるのは、AIモデルの性能以上に、<strong>人間がAIに与える文脈の質</strong>です。この文脈の構築と管理が、本ガイドの主題です。</p>
+
+  <div class="callout warn">
+    <div class="callout-title">⚠ 本ガイドの前提</div>
+    本ガイドの読者は、前編（Preflight Guide）の内容を把握しているか、要件定義・設計の基礎概念をある程度理解していることを想定しています。「AIに何を伝えるか」の前に「何を考えるべきか」が不明確な場合は、まず前編をご参照ください。
+  </div>
+</section>
+
+<!-- ═══════════════ Section: Environment ═══════════════ -->
+<section class="section" id="environment">
+  <div class="section-num">FOUNDATION</div>
+  <h2>環境を整える</h2>
+  <p class="section-subtitle">Claude Code、VS Code、Git/GitHub — 3つのツールで開発基盤を構築する</p>
+
+  <p>AIコーディングを始めるにあたり、最低限セットアップすべき環境があります。それぞれが独立したツールですが、組み合わせることで強力な開発環境になります。</p>
+
+  <h3>Claude Code — AIエージェントの中核</h3>
+  <p>Claude Codeはターミナル（コマンドライン）上で動作し、プロジェクト全体の文脈を理解した上でコードの読み書き、テスト実行、Git操作などを行います。</p>
+
+  <div class="card-grid">
+    <div class="card blue">
+      <div class="card-icon">💻</div>
+      <div class="card-title blue-t">ターミナル版</div>
+      <div class="card-desc">
+        基本形。<code class="font-mono" style="font-size:12px;background:#eef;padding:1px 4px;border-radius:3px;">npm install -g @anthropic-ai/claude-code</code> でインストール。Node.js 18以上が必要
+      </div>
+    </div>
+    <div class="card purple">
+      <div class="card-icon">🔌</div>
+      <div class="card-title purple-t">VS Code拡張版</div>
+      <div class="card-desc">
+        VS Codeのサイドパネルで動作。ターミナル版と同じCLAUDE.md、設定、MCPサーバーを共有。VS Code拡張マーケットプレイスからインストール
+      </div>
+    </div>
+    <div class="card green">
+      <div class="card-icon">🌐</div>
+      <div class="card-title green-t">Web版</div>
+      <div class="card-desc">
+        claude.ai上でClaude Codeを実行。GitHubリポジトリを接続して、ブラウザからコーディングタスクを委任できる
+      </div>
+    </div>
+  </div>
+
+  <h3>VS Code — エディタ環境</h3>
+  <p>VS Code（Visual Studio Code）は無料のコードエディタです。AIコーディングにおいて重要なのは、<strong>コードを「見る」場所</strong>として機能することです。AIが書いたコードを確認し、変更差分を視覚的に把握できます。</p>
+
+  <table class="ref-table">
+    <thead>
+      <tr><th>機能</th><th>AIコーディングでの役割</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="tag tag-env">ファイルエクスプローラ</span></td>
+        <td>プロジェクトのファイル構造を視覚的に把握。AIが作成・編集したファイルを即座に確認</td>
+      </tr>
+      <tr>
+        <td><span class="tag tag-env">差分表示（Git Diff）</span></td>
+        <td>AIが変更したコードの差分を色付きで表示。何が変わったか一目で確認できる</td>
+      </tr>
+      <tr>
+        <td><span class="tag tag-env">統合ターミナル</span></td>
+        <td>エディタ内でターミナルを開き、Claude Codeを直接実行できる</td>
+      </tr>
+      <tr>
+        <td><span class="tag tag-env">Claude Code拡張</span></td>
+        <td>サイドパネルにClaude Codeを統合。コード選択 → 右クリック → AIに質問、のような操作が可能</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Git / GitHub — 安全網とコラボレーション</h3>
+  <p>Gitは「バージョン管理システム」、GitHubはGitの「ホスティングサービス」です。AIコーディングにおいて、Gitは<strong>もっとも重要な安全装置</strong>です。</p>
+
+  <div class="card-grid">
+    <div class="card red">
+      <div class="card-icon">🛡️</div>
+      <div class="card-title red-t">なぜ安全装置か</div>
+      <div class="card-desc">
+        AIが誤ったコード変更をしても、Gitがあれば<strong>いつでも元に戻せる</strong>。作業前にブランチを切り、問題があればブランチごと破棄できる。これがない状態でAIにコードを書かせるのは、セーブなしでゲームを進めるようなもの
+      </div>
+    </div>
+    <div class="card teal">
+      <div class="card-icon">🔄</div>
+      <div class="card-title teal-t">基本ワークフロー</div>
+      <div class="card-desc">
+        1. <code class="font-mono" style="font-size:11px;">git checkout -b feature/xxx</code> で新しいブランチを作成<br>
+        2. AIにコーディングを依頼<br>
+        3. 変更を確認し、問題なければ <code class="font-mono" style="font-size:11px;">git add</code> → <code class="font-mono" style="font-size:11px;">git commit</code><br>
+        4. 問題があれば <code class="font-mono" style="font-size:11px;">git checkout .</code> で変更を破棄
+      </div>
+    </div>
+  </div>
+
+  <div class="callout tip">
+    <div class="callout-title">💡 Claude CodeはGitを理解している</div>
+    <p class="text-sm" style="margin-bottom:0;">
+      Claude Codeは <code class="font-mono">gh</code>（GitHub CLI）を使って、イシューの作成、プルリクエストの作成・確認、コメントの読み書きなどを直接実行できます。<code class="font-mono">gh</code> CLIをインストールしておくと、GitHub連携がスムーズになります。
+    </p>
+  </div>
+
+  <div class="deepdive">
+    <div class="dd-label">🤖 AI DEEP DIVE PROMPT</div>
+    <div class="dd-title">開発環境のセットアップを手伝ってもらいたいとき</div>
+    <code onclick="copyPrompt(this)">私はプログラミング初学者で、Claude Codeを使ったAIコーディングを始めたいと考えています。
+現在の環境は [Windows/Mac/Linux] です。
+
+以下のセットアップ手順を、各ステップで「何をしているか」の説明付きで教えてください：
+1. Node.js のインストール（Claude Codeに必要）
+2. Claude Code のインストールと初期設定
+3. VS Code のインストールと推奨拡張機能
+4. Git のインストールと初期設定（ユーザー名・メールの設定まで）
+5. GitHub アカウントの作成と、gh CLI のインストール
+
+各ステップで「うまくいかなかった場合」のトラブルシューティングも添えてください。
+専門用語は初出時に説明をお願いします。</code>
+  </div>
+</section>
+
+<!-- ═══════════════ Section: CLAUDE.md ═══════════════ -->
+<section class="section" id="claudemd">
+  <div class="section-num">CORE PRACTICE</div>
+  <h2>CLAUDE.md — プロジェクトの「記憶」を作る</h2>
+  <p class="section-subtitle">AIが毎回のセッション開始時に読む、プロジェクト固有の指示書</p>
+
+  <p>CLAUDE.mdは、Claude Codeがセッション開始時に自動的に読み込む特別なMarkdownファイルです。ここに書いた内容が、AIの作業の前提知識になります。前編で整理した設計や方針を、AIに伝えるための最も重要な接点です。</p>
+
+  <div class="epigraph">
+    <p>CLAUDE.mdは「プロジェクトの永続的な脳」のようなもの。セッションが変わっても、ここに書かれた文脈はAIに引き継がれる。</p>
+  </div>
+
+  <h3>CLAUDE.mdの読み込み階層</h3>
+  <p>Claude Codeは複数のCLAUDE.mdを階層的に読み込みます。すべてのレベルの内容が加算的に適用されます。</p>
+
+  <div class="hierarchy">
+    <div class="h-row">
+      <div class="h-level">GLOBAL</div>
+      <div class="h-box" style="background:var(--purple-bg);border-color:#e9d5ff;">
+        <div class="h-title" style="color:var(--purple);">~/.claude/CLAUDE.md</div>
+        <div class="h-desc">ユーザーレベル。全プロジェクト共通の個人的な作業スタイルや好み</div>
+      </div>
+    </div>
+    <div class="h-row">
+      <div class="h-connector"></div>
+      <div style="flex:1;"></div>
+    </div>
+    <div class="h-row">
+      <div class="h-level">PROJECT</div>
+      <div class="h-box" style="background:var(--blue-bg);border-color:#bfdbfe;">
+        <div class="h-title" style="color:var(--blue);">プロジェクトルート/CLAUDE.md</div>
+        <div class="h-desc">プロジェクトレベル。技術スタック、アーキテクチャ、コーディング規約</div>
+      </div>
+    </div>
+    <div class="h-row">
+      <div class="h-connector"></div>
+      <div style="flex:1;"></div>
+    </div>
+    <div class="h-row">
+      <div class="h-level">LOCAL</div>
+      <div class="h-box" style="background:var(--green-bg);border-color:#bbf7d0;">
+        <div class="h-title" style="color:var(--green);">サブディレクトリ/CLAUDE.md</div>
+        <div class="h-desc">ディレクトリレベル。特定モジュールの固有ルールや注意点</div>
+      </div>
+    </div>
+  </div>
+
+  <h3>何を書くべきか — WHAT / WHY / HOW</h3>
+
+  <div class="card-grid">
+    <div class="card blue">
+      <div class="card-icon">🗺️</div>
+      <div class="card-title blue-t">WHAT — プロジェクトの地図</div>
+      <div class="card-desc">
+        技術スタック、プロジェクト構造、各ディレクトリの役割。特にモノレポの場合、アプリ・パッケージの関係を明記
+      </div>
+    </div>
+    <div class="card green">
+      <div class="card-icon">🎯</div>
+      <div class="card-title green-t">WHY — 目的と判断基準</div>
+      <div class="card-desc">
+        プロジェクトの目的、各モジュールの存在理由。「なぜこの技術選定をしたか」の背景があると、AIの判断が的確になる
+      </div>
+    </div>
+    <div class="card purple">
+      <div class="card-icon">⚙️</div>
+      <div class="card-title purple-t">HOW — 作業の進め方</div>
+      <div class="card-desc">
+        ビルド、テスト、リントのコマンド。ブランチ命名規則。環境構築手順。AIが実際の作業で必要な実行方法
+      </div>
+    </div>
+  </div>
+
+  <h3>書くべきでないもの — アンチパターン</h3>
+
+  <table class="ref-table">
+    <thead>
+      <tr><th>❌ やりがちなこと</th><th>✅ 代わりにすべきこと</th><th>理由</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="tag tag-warn">コードスニペットの埋め込み</span></td>
+        <td>ファイルパスと行番号の参照<br><code class="font-mono text-sm">詳細は src/auth/README.md 参照</code></td>
+        <td>コードは変化するが、CLAUDE.mdは追従しにくい。すぐに陳腐化する</td>
+      </tr>
+      <tr>
+        <td><span class="tag tag-warn">コードスタイルの詳細規定</span></td>
+        <td>リンター / フォーマッターに任せる<br><code class="font-mono text-sm">ESLint, Prettier を使用</code></td>
+        <td>スタイル強制はLLMよりリンターのほうが速く、確実で、安価</td>
+      </tr>
+      <tr>
+        <td><span class="tag tag-warn">大量の指示を詰め込む</span></td>
+        <td>150個以下の明確な指示に絞る</td>
+        <td>指示が多いほどAIの指示遵守率が一様に低下することが研究で示されている</td>
+      </tr>
+      <tr>
+        <td><span class="tag tag-warn">「〜するな」だけの禁止</span></td>
+        <td>「〜の代わりに△△を使う」と代替を示す</td>
+        <td>AIが「何をすべきか」分からず行き詰まることを防ぐ</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout info">
+    <div class="callout-title">💡 「Claudeが間違えたことを書く」が最良の更新戦略</div>
+    <p class="text-sm" style="margin-bottom:0;">
+      CLAUDE.mdを最初から完璧に書く必要はありません。実際にClaude Codeを使い、AIが間違えたパターンや、繰り返し修正を求めた点を記録していくのが、もっとも実用的なCLAUDE.mdの育て方です。CLAUDE.mdは一度書いて終わりではなく、育てていく文書です。
+    </p>
+  </div>
+
+  <div class="code-block">
+    <span class="code-label">CLAUDE.md の最小構成例</span>
+    <pre><span class="comment"># プロジェクト概要</span>
+<span class="key">問い合わせ管理Webアプリ（Next.js + Supabase）</span>
+
+<span class="comment"># 技術スタック</span>
+- フレームワーク: <span class="val">Next.js 15 (App Router)</span>
+- DB/認証: <span class="val">Supabase</span>
+- スタイル: <span class="val">Tailwind CSS</span>
+- 言語: <span class="val">TypeScript（strict mode）</span>
+
+<span class="comment"># プロジェクト構造</span>
+- <span class="key">src/app/</span> — ページとAPIルート
+- <span class="key">src/components/</span> — 再利用可能なUIコンポーネント
+- <span class="key">src/lib/</span> — ユーティリティ、Supabaseクライアント
+- <span class="key">supabase/migrations/</span> — DBマイグレーション
+
+<span class="comment"># 重要なコマンド</span>
+- 開発サーバー: <span class="highlight">npm run dev</span>
+- テスト: <span class="highlight">npm run test</span>
+- 型チェック: <span class="highlight">npx tsc --noEmit</span>
+- リント: <span class="highlight">npm run lint</span>
+
+<span class="comment"># コーディング方針</span>
+- <span class="val">コンポーネントは関数コンポーネント + Hooks</span>
+- <span class="val">サーバーアクションを優先、API Routeは外部連携時のみ</span>
+- <span class="val">エラーハンドリングは try-catch で明示的に</span>
+
+<span class="comment"># よくある間違い（過去の学習から）</span>
+- <span class="highlight">Supabaseのクライアントは createServerClient を使う（server側）</span>
+- <span class="highlight">RLS（Row Level Security）が有効。新テーブルにはポリシー必須</span></pre>
+  </div>
+
+  <div class="deepdive">
+    <div class="dd-label">🤖 AI DEEP DIVE PROMPT</div>
+    <div class="dd-title">自分のプロジェクトのCLAUDE.mdを作りたいとき</div>
+    <code onclick="copyPrompt(this)">これから [プロジェクトの概要] の開発をClaude Codeで始めます。
+
+以下の情報を元に、CLAUDE.md の草案を作成してください：
+- 技術スタック: [使用する技術]
+- 主要機能: [実装予定の機能リスト]
+- 想定利用者: [誰が使うか]
+- 規模感: [小規模/中規模]
+
+CLAUDE.mdに含めるべき内容：
+1. プロジェクト概要（1-2行）
+2. 技術スタックとバージョン
+3. ディレクトリ構造と各ディレクトリの役割
+4. 重要なコマンド（ビルド、テスト、リント）
+5. コーディング規約（最小限の原則のみ）
+6. 「やってはいけないこと」と「代わりにすべきこと」のペア
+
+150個以上の指示を詰め込まないでください。
+まず質問があれば聞いてください。</code>
+  </div>
+</section>
+
+<!-- ═══════════════ Section: Context ═══════════════ -->
+<section class="section" id="context">
+  <div class="section-num">KEY CONCEPT</div>
+  <h2>コンテキスト管理 — AIの「作業記憶」を理解する</h2>
+  <p class="section-subtitle">もっとも成功するClaude Codeユーザーは、コンテキストの管理に執着している</p>
+
+  <p>コンテキスト（文脈）とは、AIが一度に「見ている」情報の総量です。Claude Codeにはコンテキストウィンドウ（一度に処理できるトークン量の上限）があり、この有限の空間をどう使うかが、AIの出力品質を直接的に左右します。</p>
+
+  <div class="epigraph">
+    <p>コンテキストの劣化が、Claude Codeにおける最大の失敗要因である。</p>
+  </div>
+
+  <h3>コンテキストウィンドウの仕組み</h3>
+
+  <div class="card-grid">
+    <div class="card yellow">
+      <div class="card-icon">📦</div>
+      <div class="card-title yellow-t">有限の箱</div>
+      <div class="card-desc">
+        コンテキストウィンドウは「作業机」のようなもの。載せられる書類には限りがある。机が書類で溢れると、AIは重要な情報を見落とし始める
+      </div>
+    </div>
+    <div class="card red">
+      <div class="card-icon">📉</div>
+      <div class="card-title red-t">劣化のサイン</div>
+      <div class="card-desc">
+        会話が長くなるにつれて、AIが以前の指示を忘れ始める、コードの一貫性が下がる、同じ提案を繰り返す — これらはコンテキスト劣化の兆候
+      </div>
+    </div>
+    <div class="card green">
+      <div class="card-icon">🔄</div>
+      <div class="card-title green-t">コンパクション</div>
+      <div class="card-desc">
+        コンテキストが上限に近づくと、Claude Codeは自動的に会話を要約して圧縮する（コンパクション）。情報のロスは不可避なので、事前の管理が重要
+      </div>
+    </div>
+  </div>
+
+  <h3>コンテキストを守る実践テクニック</h3>
+
+  <table class="ref-table">
+    <thead>
+      <tr><th>テクニック</th><th>方法</th><th>効果</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="tag tag-ctx">/clear の活用</span></td>
+        <td>タスクが完了したら <code class="font-mono">/clear</code> で会話履歴をリセット。CLAUDE.mdは保持される</td>
+        <td>新鮮なコンテキストで次のタスクに臨める。最も基本的で効果的な手段</td>
+      </tr>
+      <tr>
+        <td><span class="tag tag-ctx">タスクの分割</span></td>
+        <td>大きな機能を小さなタスクに分割し、タスクごとにセッションをリセット</td>
+        <td>各タスクが独立したコンテキストで実行され、品質が安定する</td>
+      </tr>
+      <tr>
+        <td><span class="tag tag-ctx">計画の外部化</span></td>
+        <td>計画を <code class="font-mono">IMPLEMENTATION_PLAN.md</code> などのファイルに書き出す</td>
+        <td>セッションをまたいで計画を参照できる「永続的な作業記憶」になる</td>
+      </tr>
+      <tr>
+        <td><span class="tag tag-ctx">サブエージェントの活用</span></td>
+        <td>重い調査や分析をサブエージェントに委任</td>
+        <td>メインの会話コンテキストを汚さない。結果だけが要約で返る</td>
+      </tr>
+      <tr>
+        <td><span class="tag tag-ctx">MCP接続の精選</span></td>
+        <td>本当に必要なMCPサーバーのみ接続。使わないものは外す</td>
+        <td>MCPが20kトークン以上を消費すると、実作業用の余地が大幅に減る</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Plan Mode — 実装前に考える時間を作る</h3>
+  <p>Claude Codeでは <kbd>Shift+Tab</kbd> を2回押すことで「Plan Mode」に切り替えられます。この状態ではAIはファイルを変更できず、調査・分析・計画だけを行います。</p>
+
+  <div class="callout tip">
+    <div class="callout-title">💡 Plan → Implement の2段階が、品質を劇的に変える</div>
+    <p class="text-sm" style="margin-bottom:0;">
+      <strong>Step 1:</strong> Plan Modeで「この機能を実装するための計画を立てて。コードは書かないで」と依頼 →
+      <strong>Step 2:</strong> 計画を確認・修正 →
+      <strong>Step 3:</strong> Plan Modeを解除して「この計画に従って実装して」と依頼。
+      AIに考える時間を与え、人間が判断する余地を確保するこのパターンが、最も安定した結果を生みます。
+    </p>
+  </div>
+
+  <div class="deepdive">
+    <div class="dd-label">🤖 AI DEEP DIVE PROMPT</div>
+    <div class="dd-title">コンテキスト管理の考え方をさらに深く理解したいとき</div>
+    <code onclick="copyPrompt(this)">Claude Codeの「コンテキストウィンドウ」について、以下の観点で初学者向けに教えてください：
+
+1. コンテキストウィンドウとは何か — 「作業机」のような身近な比喩で説明
+2. コンテキストが劣化するとAIの振る舞いがどう変わるか — 具体的な症状
+3. /clear コマンドは何をしているのか — 何が消え、何が残るか
+4. 「計画をファイルに書き出す」というテクニックがなぜ有効か
+5. サブエージェントが「コンテキストを守る」仕組みの図解
+
+「コンテキスト管理に執着することが成功の鍵」と言われる理由を、実際の開発シナリオで示してください。</code>
+  </div>
+</section>
+
+<!-- ═══════════════ Section: Extensions ═══════════════ -->
+<section class="section" id="extensions">
+  <div class="section-num">EXTENSION LAYER</div>
+  <h2>Claude Codeの拡張機能を理解する</h2>
+  <p class="section-subtitle">Skills, Subagents, Hooks, Slash Commands, Plugins — それぞれの役割と使い分け</p>
+
+  <p>Claude Codeは「コアのエージェントループ」の上に、カスタマイズ用の拡張レイヤーを持っています。これらを理解することで、AIとの協働をプロジェクトに合わせて最適化できます。</p>
+
+  <h3>拡張機能の全体像</h3>
+
+  <table class="ref-table">
+    <thead>
+      <tr><th>機能</th><th>何をするか</th><th>いつ使うか</th><th>比喩</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="tag tag-ctx">CLAUDE.md</span></td>
+        <td>毎セッションで自動的に読み込まれる永続的な文脈</td>
+        <td>プロジェクトの規約、構造、方針を伝えたいとき</td>
+        <td>プロジェクトの「社内マニュアル」</td>
+      </tr>
+      <tr>
+        <td><span class="tag tag-ext">Skills</span></td>
+        <td>必要に応じて読み込まれるナレッジとワークフロー</td>
+        <td>特定の作業手順やドメイン知識をAIに与えたいとき</td>
+        <td>専門書の「参照マニュアル」</td>
+      </tr>
+      <tr>
+        <td><span class="tag tag-tool">Subagents</span></td>
+        <td>独立したコンテキストでタスクを実行する専門AIアシスタント</td>
+        <td>コードレビュー、調査、テストなど専門作業を委任したいとき</td>
+        <td>チームの「専門担当者」</td>
+      </tr>
+      <tr>
+        <td><span class="tag tag-cmd">Slash Commands</span></td>
+        <td>ユーザーが <code class="font-mono">/コマンド名</code> で起動する定型ワークフロー</td>
+        <td>繰り返し実行する作業をショートカット化したいとき</td>
+        <td>ブックマークした「手順書」</td>
+      </tr>
+      <tr>
+        <td><span class="tag tag-warn">Hooks</span></td>
+        <td>特定のイベントで自動実行されるスクリプト</td>
+        <td>ファイル編集後の自動フォーマット、コミット前のリントなど</td>
+        <td>自動で動く「品質チェック係」</td>
+      </tr>
+      <tr>
+        <td><span class="tag tag-env">Plugins</span></td>
+        <td>Skills, Hooks, Subagents等をパッケージ化して配布する仕組み</td>
+        <td>チームで設定を共有したい、コミュニティのツールを使いたいとき</td>
+        <td>まとめてインストールできる「拡張パック」</td>
+      </tr>
+      <tr>
+        <td><span class="tag tag-ext">MCP</span></td>
+        <td>外部ツール・データソースへの接続プロトコル</td>
+        <td>GitHub, Notion, DB, Figmaなど外部サービスと連携したいとき</td>
+        <td>外部サービスへの「USB-C接続」</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Skills — AIに「やり方」を教える</h3>
+  <p>Skillsは、Claude Codeに特定のタスクの実行方法を教えるための仕組みです。会話の内容に応じて自動的に読み込まれる「プログレッシブ・ディスクロージャー」（段階的開示）の設計により、必要なときだけコンテキストを消費します。</p>
+
+  <div class="card-grid">
+    <div class="card blue">
+      <div class="card-icon">📖</div>
+      <div class="card-title blue-t">構造</div>
+      <div class="card-desc">
+        Skillはフォルダで構成。SKILL.mdが核となる指示書で、必要に応じてスクリプトやテンプレートファイルを含む。YAMLフロントマターにname（名前）とdescription（説明）を記述
+      </div>
+    </div>
+    <div class="card green">
+      <div class="card-icon">🔍</div>
+      <div class="card-title green-t">発動の仕組み</div>
+      <div class="card-desc">
+        セッション開始時にdescriptionだけが読み込まれる → 会話に関連するSkillがあればSKILL.mdを読み込む → 必要なら追加ファイルも読む。段階的に情報を開示する設計
+      </div>
+    </div>
+    <div class="card purple">
+      <div class="card-icon">🔧</div>
+      <div class="card-title purple-t">用途の例</div>
+      <div class="card-desc">
+        デプロイ手順、コードレビューの基準、特定のフレームワークの使い方、テスト戦略、ドキュメントの書き方など。チームの「暗黙知」を形式化するのに最適
+      </div>
+    </div>
+  </div>
+
+  <h3>Subagents — 専門家に委任する</h3>
+  <p>Subagentsは、メインのClaude Codeとは<strong>独立したコンテキストウィンドウ</strong>を持つ専門AIアシスタントです。メインの会話を汚さずに、特定のタスクを深く実行できます。</p>
+
+  <div class="code-block">
+    <span class="code-label">Subagent定義ファイルの例（.claude/agents/code-reviewer.md）</span>
+    <pre><span class="comment">---</span>
+<span class="key">name:</span> <span class="val">code-reviewer</span>
+<span class="key">description:</span> <span class="val">コードの品質とセキュリティをレビューする</span>
+<span class="key">tools:</span> <span class="val">Read, Grep, Glob</span>  <span class="comment"># Write権限なし = 安全</span>
+<span class="key">model:</span> <span class="val">sonnet</span>
+<span class="comment">---</span>
+<span class="highlight">あなたはシニアコードレビュアーです。</span>
+以下の観点でコードをレビューしてください：
+- セキュリティ脆弱性（SQLインジェクション、XSS、認証の欠陥）
+- エラーハンドリングの網羅性
+- コードの可読性と保守性
+- 命名規則の一貫性
+
+具体的な行番号を参照し、修正案を提示してください。</pre>
+  </div>
+
+  <h3>Hooks — 自動化されたガードレール</h3>
+  <p>Hooksは、Claude Codeのライフサイクルの特定のタイミングで自動実行されるスクリプトです。「AIの判断に委ねる」のではなく、「確定的に毎回実行される」ことがポイントです。</p>
+
+  <div class="card-grid">
+    <div class="card orange">
+      <div class="card-icon">🚀</div>
+      <div class="card-title orange-t">SessionStart</div>
+      <div class="card-desc">セッション開始時に実行。環境変数の設定、最新のGitイシュー読み込みなど</div>
+    </div>
+    <div class="card blue">
+      <div class="card-icon">🔒</div>
+      <div class="card-title blue-t">PreToolUse</div>
+      <div class="card-desc">ツール実行前に検証。危険なBashコマンドのブロック、read-onlyの強制など</div>
+    </div>
+    <div class="card green">
+      <div class="card-icon">✅</div>
+      <div class="card-title green-t">PostToolUse</div>
+      <div class="card-desc">ツール実行後に処理。ファイル編集後の自動フォーマット、テスト自動実行など</div>
+    </div>
+    <div class="card red">
+      <div class="card-icon">🔔</div>
+      <div class="card-title red-t">Notification</div>
+      <div class="card-desc">Claudeが入力待ちのとき発火。デスクトップ通知を送って、他の作業中でも気づける</div>
+    </div>
+  </div>
+
+  <div class="callout warn">
+    <div class="callout-title">⚠ 拡張機能の使いすぎに注意</div>
+    <p class="text-sm" style="margin-bottom:0;">
+      すべての拡張機能はコンテキストを消費します。Skills、Subagents、MCPサーバーを大量に追加すると、実際の作業に使えるコンテキストが減ります。「シンプルさが複雑さに勝つ」は、Claude Codeベストプラクティスの鉄則です。まずは CLAUDE.md と /clear の活用から始め、必要性を感じたときに拡張機能を追加するのが賢明です。
+    </p>
+  </div>
+
+  <div class="deepdive">
+    <div class="dd-label">🤖 AI DEEP DIVE PROMPT</div>
+    <div class="dd-title">自分のプロジェクトに最適な拡張構成を考えたいとき</div>
+    <code onclick="copyPrompt(this)">Claude Codeの拡張機能（Skills, Subagents, Hooks, Slash Commands, MCP, Plugins）について、以下のプロジェクトに最適な構成を提案してください。
+
+プロジェクト：[あなたのプロジェクトの説明]
+チーム規模：[1人/小チーム/中規模チーム]
+主な課題：[繰り返しの多い作業、品質管理、外部連携など]
+
+提案に含めてほしいこと：
+1. 「最初に導入すべき」拡張機能とその理由（最小構成）
+2. 「慣れてきたら追加する」拡張機能
+3. 各拡張機能の具体的な設定例（ファイル内容も含めて）
+4. コンテキスト消費量の見積もりと、使いすぎの兆候
+
+「シンプルさが複雑さに勝つ」原則に基づいて、過剰な構成にならないよう注意してください。</code>
+  </div>
+</section>
+
+<!-- ═══════════════ Section: Workflow ═══════════════ -->
+<section class="section" id="workflow">
+  <div class="section-num">IN PRACTICE</div>
+  <h2>実際の開発ワークフロー</h2>
+  <p class="section-subtitle">Git × Claude Code × VS Code を組み合わせた日常の開発サイクル</p>
+
+  <p>ここまでの知識を統合して、実際の開発で使えるワークフローを整理します。重要なのは「AIに任せきりにしない」ことと、「人間が判断すべきポイントを明確にする」ことです。</p>
+
+  <h3>基本サイクル — Plan → Implement → Review → Commit</h3>
+
+  <div class="hierarchy">
+    <div class="h-row">
+      <div class="h-level">STEP 1</div>
+      <div class="h-box" style="background:var(--blue-bg);border-color:#bfdbfe;">
+        <div class="h-title" style="color:var(--blue);">🎯 計画（Plan Mode）</div>
+        <div class="h-desc">ブランチを切り、Plan Modeで実装方針を確認。AIに計画をファイルに書き出させる</div>
+      </div>
+    </div>
+    <div class="h-row">
+      <div class="h-connector"></div>
+      <div style="flex:1;"></div>
+    </div>
+    <div class="h-row">
+      <div class="h-level">STEP 2</div>
+      <div class="h-box" style="background:var(--green-bg);border-color:#bbf7d0;">
+        <div class="h-title" style="color:var(--green);">⚡ 実装（Implement）</div>
+        <div class="h-desc">計画に基づいてAIにコード生成を依頼。小さなステップに分割し、各ステップで動作確認</div>
+      </div>
+    </div>
+    <div class="h-row">
+      <div class="h-connector"></div>
+      <div style="flex:1;"></div>
+    </div>
+    <div class="h-row">
+      <div class="h-level">STEP 3</div>
+      <div class="h-box" style="background:var(--purple-bg);border-color:#e9d5ff;">
+        <div class="h-title" style="color:var(--purple);">🔍 レビュー（Review）</div>
+        <div class="h-desc">VS Codeで差分を確認。AIに自身のコードをレビューさせる。テストを実行</div>
+      </div>
+    </div>
+    <div class="h-row">
+      <div class="h-connector"></div>
+      <div style="flex:1;"></div>
+    </div>
+    <div class="h-row">
+      <div class="h-level">STEP 4</div>
+      <div class="h-box" style="background:var(--yellow-bg);border-color:#fef08a;">
+        <div class="h-title" style="color:var(--yellow);">📦 コミット & クリア</div>
+        <div class="h-desc">git commit → /clear でコンテキストをリセット → 次のタスクへ</div>
+      </div>
+    </div>
+  </div>
+
+  <h3>「AIに自分のコードをレビューさせる」パターン</h3>
+  <p>意外に効果的な手法として、AIが書いたコードを別のセッション（またはサブエージェント）でレビューさせるパターンがあります。「書いた本人」とは異なるコンテキストで見直すことで、一貫性の欠陥やセキュリティの見落としが発見されやすくなります。</p>
+
+  <h3>並列作業 — 複数のClaude Codeを同時に動かす</h3>
+  <p>Claude Codeは複数のセッションを同時に実行できます。フロントエンドの作業をしながら、別のセッションでバックエンドのAPIを並行開発したり、テスト作成を委任したりできます。</p>
+
+  <div class="card-grid">
+    <div class="card teal">
+      <div class="card-icon">🔀</div>
+      <div class="card-title teal-t">ブランチ戦略</div>
+      <div class="card-desc">
+        各セッションを別ブランチで作業させる。セッション名に <code class="font-mono" style="font-size:11px;">/rename</code> で意味のある名前をつける（例: "oauth-migration", "api-tests"）
+      </div>
+    </div>
+    <div class="card orange">
+      <div class="card-icon">🌐</div>
+      <div class="card-title orange-t">Web版との連携</div>
+      <div class="card-desc">
+        長時間かかるタスクはWeb版に送って（<code class="font-mono" style="font-size:11px;">&</code>プレフィックス）クラウドで実行。ローカルでは別の作業を継続できる
+      </div>
+    </div>
+  </div>
+
+  <h3>セッションを「育てる」マインドセット</h3>
+  <p>AIコーディングは「一度のプロンプトで完璧なコードが出てくる」ものではありません。むしろ以下のようなイテレーティブ（反復的）なプロセスです：</p>
+
+  <table class="ref-table">
+    <thead>
+      <tr><th>段階</th><th>人間がすること</th><th>AIがすること</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1. 意図を伝える</td>
+        <td>「〜を実装したい」と要望を伝える</td>
+        <td>質問を返す、計画を提案する</td>
+      </tr>
+      <tr>
+        <td>2. 判断する</td>
+        <td>AIの質問に答え、計画を承認/修正する</td>
+        <td>フィードバックを反映して計画を更新</td>
+      </tr>
+      <tr>
+        <td>3. 確認する</td>
+        <td>生成されたコードを確認し、問題点を指摘</td>
+        <td>指摘に基づいて修正。テストを実行</td>
+      </tr>
+      <tr>
+        <td>4. 学習する</td>
+        <td>AIが間違えたパターンをCLAUDE.mdに記録</td>
+        <td>次回以降、記録された知見を参照</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout info">
+    <div class="callout-title">💡 AIを「優秀だが方向音痴のジュニア開発者」と捉える</div>
+    <p class="text-sm" style="margin-bottom:0;">
+      Claude Codeは非常に高速にコードを書けますが、プロジェクト全体のビジョンや、業務上の文脈を自ら把握することはできません。「何を作るか」「なぜそう作るか」の判断は常に人間の責任です。AIが生成したコードに自分の名前をつけてコミットする以上、そのコードに対する最終的な責任は人間にあります。
+    </p>
+  </div>
+
+  <div class="deepdive">
+    <div class="dd-label">🤖 AI DEEP DIVE PROMPT</div>
+    <div class="dd-title">自分のプロジェクトで実際にワークフローを試したいとき</div>
+    <code onclick="copyPrompt(this)">これから Claude Code を使って [プロジェクトの機能] の実装を始めます。
+
+まず Plan Mode で以下を行ってください：
+1. この機能の実装計画を立てる（ステップは3-5個に分割）
+2. 各ステップの「完了条件」を明確にする
+3. 想定されるリスクや依存関係を洗い出す
+4. 計画を IMPLEMENTATION_PLAN.md に書き出す
+
+コードはまだ書かないでください。
+計画が確定してから、ステップごとに実装を進めます。
+
+各ステップの実装後は：
+- テストを実行して動作確認する
+- git commit でこまめに保存する
+- 問題があれば立ち止まって相談する
+
+よろしくお願いします。</code>
+  </div>
+</section>
+
+<!-- ═══════════════ Section: Security & Data Privacy ═══════════════ -->
+<section class="section" id="security">
+  <div class="section-num">DATA GOVERNANCE</div>
+  <h2>業務利用における情報管理</h2>
+  <p class="section-subtitle">生成AIに「何を渡してよいか」は、技術の問題ではなく組織の判断の問題</p>
+
+  <p>生成AIをコーディングに使うということは、プロンプトやコードの一部が外部のサーバーに送信されるということを意味します。個人的な学習や趣味のプロジェクトであれば大きな問題にはなりませんが、<strong>業務で利用する場合は「情報漏洩」という現実的なリスク</strong>が発生します。</p>
+
+  <div class="epigraph">
+    <p>個人情報保護委員会は2023年6月、生成AIサービスへの個人情報入力について注意喚起を発出。入力された情報がモデルの学習に利用される可能性を十分に理解すること、と明確に指摘している。</p>
+    <p>デジタル庁のガイドラインでは、「クラウドサービス型の生成AIで要機密情報を取り扱うことは原則としてできない」と定めている。</p>
+  </div>
+
+  <h3>何が問題なのか — リスクの構造を理解する</h3>
+
+  <p>「AIに送信したデータが漏洩する」という問題には、複数の層があります。表面的な理解で終わらせず、構造を把握しておくことが重要です。</p>
+
+  <div class="card-grid">
+    <div class="card red">
+      <div class="card-icon">🔄</div>
+      <div class="card-title red-t">学習データへの取り込み</div>
+      <div class="card-desc">
+        入力した情報がAIモデルの学習データとして使われると、他のユーザーへの回答に反映される可能性がある。<strong>最も典型的な漏洩経路</strong>
+      </div>
+    </div>
+    <div class="card orange">
+      <div class="card-icon">💾</div>
+      <div class="card-title orange-t">サーバーへのデータ保存</div>
+      <div class="card-desc">
+        学習に使われなくても、プロンプトと応答がサーバーに一定期間保存される。保存中にセキュリティインシデントが起きれば漏洩リスクがある
+      </div>
+    </div>
+    <div class="card yellow">
+      <div class="card-icon">🌍</div>
+      <div class="card-title yellow-t">越境データ移転</div>
+      <div class="card-desc">
+        海外のサーバーにデータが送信・保存される場合、日本の個人情報保護法における「外国にある第三者への提供」に該当しうる
+      </div>
+    </div>
+    <div class="card purple">
+      <div class="card-icon">👤</div>
+      <div class="card-title purple-t">シャドーIT</div>
+      <div class="card-desc">
+        組織が把握していない個人アカウントで、従業員が業務データをAIに入力してしまう。最も管理が困難で、最も発生しやすい問題
+      </div>
+    </div>
+  </div>
+
+  <h3>Claude / Claude Codeの場合 — プランによる違いを理解する</h3>
+
+  <p>Anthropicの製品は、プラン（契約形態）によってデータの取り扱いが大きく異なります。業務利用の場合、この違いの理解は必須です。</p>
+
+  <table class="ref-table">
+    <thead>
+      <tr><th>プラン</th><th>学習利用</th><th>データ保持</th><th>業務利用の適性</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="tag tag-warn">Free / Pro / Max</span><br><span class="text-sm text-light">個人向けプラン</span></td>
+        <td>ユーザーの選択による。<strong>デフォルトでオン</strong>にされている場合がある（2025年9月〜）。オフにすることも可能</td>
+        <td>学習許可時: 最大5年。不許可時: 30日</td>
+        <td style="color:var(--red);font-weight:500;">機密情報の入力は不可。学習利用オフの確認が必須</td>
+      </tr>
+      <tr>
+        <td><span class="tag tag-ext">Team / Enterprise</span><br><span class="text-sm text-light">法人向けプラン</span></td>
+        <td><strong>デフォルトで学習に利用されない。</strong>明示的にオプトインしない限り不使用</td>
+        <td>カスタム設定可能（Enterprise）。デフォルト30日</td>
+        <td style="color:var(--green);font-weight:500;">業務利用の基本的な安全要件を満たす</td>
+      </tr>
+      <tr>
+        <td><span class="tag tag-ctx">API利用</span><br><span class="text-sm text-light">開発者向け</span></td>
+        <td><strong>学習に利用されない</strong></td>
+        <td>7日間（2025年9月〜）。ZDR契約で即時削除も可能</td>
+        <td style="color:var(--green);font-weight:500;">技術的に最も制御しやすい</td>
+      </tr>
+      <tr>
+        <td><span class="tag tag-tool">AWS Bedrock / Vertex AI</span><br><span class="text-sm text-light">クラウド経由</span></td>
+        <td><strong>学習に利用されない</strong></td>
+        <td>各クラウドプロバイダーの設定に準拠。VPC分離も可能</td>
+        <td style="color:var(--green);font-weight:500;">既存のクラウドセキュリティ体制と統合できる</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout warn">
+    <div class="callout-title">⚠ 最重要ポイント：個人プランでの業務利用は原則NG</div>
+    <p class="text-sm" style="margin-bottom:0;">
+      Free / Pro / Maxプランは個人向けであり、入力データがモデル学習に使われる可能性があります。2025年9月以降、消費者プランではデフォルトで学習利用が有効化されています。<strong>業務上の機密情報や個人情報を個人プランのAIに入力することは、組織としての情報漏洩に該当しうる</strong>行為です。プライバシー設定で学習利用をオフにしていても、サーバーへの送信・保存は発生します。
+    </p>
+  </div>
+
+  <h3>Claude Codeが送信するデータの範囲</h3>
+
+  <p>Claude Codeを使う場合、具体的に<strong>何がAnthropicのサーバーに送信されるか</strong>を理解しておくことが重要です。</p>
+
+  <div class="card-grid">
+    <div class="card red">
+      <div class="card-icon">📤</div>
+      <div class="card-title red-t">送信されるもの</div>
+      <div class="card-desc">
+        Claude Codeが<strong>読み取った</strong>ファイルの内容（全文）、プロンプト（指示文）、Claudeの応答、会話コンテキスト。通信はTLSで暗号化される
+      </div>
+    </div>
+    <div class="card green">
+      <div class="card-icon">🔒</div>
+      <div class="card-title green-t">送信されないもの</div>
+      <div class="card-desc">
+        Claude Codeが読み取って<strong>いない</strong>プロジェクト内のファイル、ローカルの環境設定、データベースの中身、外部APIの応答（明示的に共有しない限り）
+      </div>
+    </div>
+  </div>
+
+  <div class="callout info">
+    <div class="callout-title">💡 「選択的読み取り」が一定の安全弁になる</div>
+    <p class="text-sm" style="margin-bottom:0;">
+      Claude Codeはプロジェクト全体を自動スキャンして送信するわけではありません。Claude Codeが明示的に読み取ったファイルだけが送信されます。ただし、AIに「このファイルを読んで」と指示したり、AIが自律的に関連ファイルを読む場合は送信対象になるため、<strong>機密ファイルがプロジェクト内に混在していないか</strong>の確認は必要です。
+    </p>
+  </div>
+
+  <h3>実際の業務で生成AIを使うためのグッドプラクティス</h3>
+
+  <p>「リスクがあるから使わない」ではなく、「リスクを理解した上で、安全に使える範囲を特定する」のが現実的なアプローチです。以下に、組織の規模やリソースに応じた段階的な対策を整理します。</p>
+
+  <h3>レベル1：個人・小規模チーム — 最小限の防御線</h3>
+
+  <ul class="checklist">
+    <li>
+      <span class="q">入力禁止情報のリストを明確にする</span>
+      <span class="hint">個人情報（氏名、メール、電話番号）、認証情報（パスワード、APIキー）、未公開の経営データ、取引先から預かった情報 → これらは「絶対にAIに渡さない」</span>
+    </li>
+    <li>
+      <span class="q">データを匿名化・抽象化してからAIに渡す</span>
+      <span class="hint">「田中太郎さんの問い合わせ」→「ユーザーAの問い合わせ」。実データの代わりにダミーデータやサンプルデータを使う</span>
+    </li>
+    <li>
+      <span class="q">プライバシー設定を確認する</span>
+      <span class="hint">個人プランの場合、claude.ai の Settings → Data Privacy Controls で学習利用をオフに設定。ただし、これだけでは業務利用の安全性は十分でない</span>
+    </li>
+    <li>
+      <span class="q">機密ファイルをプロジェクトディレクトリから分離する</span>
+      <span class="hint">.env ファイル、設定ファイル、本番データのダンプなどがClaude Codeの読み取り範囲に入らないよう、ディレクトリ構造を整理する</span>
+    </li>
+    <li>
+      <span class="q">.gitignore と同様の「AI除外」の発想を持つ</span>
+      <span class="hint">Gitにコミットしないファイル = AIにも渡さないファイル、と考えるとわかりやすい。Hooksの deny ルールで特定ファイルへのアクセスをブロックすることも可能</span>
+    </li>
+  </ul>
+
+  <h3>レベル2：組織的な業務利用 — 制度と技術の両面から</h3>
+
+  <div class="card-grid">
+    <div class="card blue">
+      <div class="card-icon">📋</div>
+      <div class="card-title blue-t">社内ガイドラインの策定</div>
+      <div class="card-desc">
+        入力禁止情報の具体的なリスト、利用を許可するAIサービスの一覧と想定用途、インシデント時の報告フローを明文化。A4で1枚でもよいので「書かれたルール」を持つことが出発点
+      </div>
+    </div>
+    <div class="card green">
+      <div class="card-icon">💼</div>
+      <div class="card-title green-t">法人向けプランへの移行</div>
+      <div class="card-desc">
+        Claude Team / Enterprise、またはAPI利用に切り替える。<strong>これが業務利用のもっとも現実的な第一歩</strong>。学習利用がデフォルトでオフになり、データ保持期間も制御可能になる
+      </div>
+    </div>
+    <div class="card purple">
+      <div class="card-icon">🚫</div>
+      <div class="card-title purple-t">シャドーIT対策</div>
+      <div class="card-desc">
+        「禁止するだけ」では機能しない。安全に使える公式ツールを提供した上で、個人アカウントでの業務利用を制限する。「使うな」より「こっちを使え」が実効性のあるアプローチ
+      </div>
+    </div>
+    <div class="card orange">
+      <div class="card-icon">📚</div>
+      <div class="card-title orange-t">従業員研修</div>
+      <div class="card-desc">
+        何が危険で、なぜ危険なのかを具体例で伝える。「顧客リストをAIに貼り付けたらどうなるか」のシナリオが、抽象的な禁止事項より効果的
+      </div>
+    </div>
+  </div>
+
+  <h3>レベル3：高度なセキュリティ要件 — 規制産業・大規模組織向け</h3>
+
+  <table class="ref-table">
+    <thead>
+      <tr><th>対策</th><th>内容</th><th>対象</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="tag tag-ext">Zero Data Retention (ZDR)</span></td>
+        <td>入出力をAnthropicのサーバーに保存しない契約。リアルタイムの安全性チェック後に即削除</td>
+        <td>医療、金融、政府機関など、データ保持自体が許容されない環境</td>
+      </tr>
+      <tr>
+        <td><span class="tag tag-ext">AWS Bedrock / Vertex AI経由</span></td>
+        <td>VPC内にClaude APIをデプロイ。通信がパブリックインターネットを通らない構成が可能</td>
+        <td>既存のクラウドセキュリティ基盤を持つ企業</td>
+      </tr>
+      <tr>
+        <td><span class="tag tag-ext">managed-settings.json</span></td>
+        <td>組織全体のClaude Code利用ポリシーを管理者が一元制御。個人では上書き不可</td>
+        <td>Enterpriseプランで多数の開発者がClaude Codeを使う組織</td>
+      </tr>
+      <tr>
+        <td><span class="tag tag-ext">監査ログ</span></td>
+        <td>誰がいつ何にアクセスしたかの記録。Enterpriseプランで利用可能</td>
+        <td>コンプライアンス要件のある組織</td>
+      </tr>
+      <tr>
+        <td><span class="tag tag-ext">契約条項の整備</span></td>
+        <td>再学習禁止、保持期間、越境移転通知、インシデント時の対応を契約に明記</td>
+        <td>SaaS/AI契約の法務レビューが必要なすべての組織</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>「機密情報を扱わない」という設計判断</h3>
+
+  <p>前編のセキュリティセクションでも触れましたが、生成AIの業務利用において最も実践的な戦略は、<strong>「機密情報をAIに渡す必要がない設計にする」</strong>ことです。</p>
+
+  <div class="card-grid">
+    <div class="card teal">
+      <div class="card-icon">🔀</div>
+      <div class="card-title teal-t">コードと秘密情報を分離する</div>
+      <div class="card-desc">
+        APIキーは環境変数に。本番データは別リポジトリに。設定ファイルは.gitignoreに。<strong>AIが触れるコードベースに秘密情報が存在しない</strong>状態を作る
+      </div>
+    </div>
+    <div class="card teal">
+      <div class="card-icon">🎭</div>
+      <div class="card-title teal-t">サンプルデータで開発する</div>
+      <div class="card-desc">
+        本番の顧客データではなく、構造が同じダミーデータで開発・テストする。AIにはダミーデータだけを見せれば、実データを渡す必要がない
+      </div>
+    </div>
+    <div class="card teal">
+      <div class="card-icon">📐</div>
+      <div class="card-title teal-t">パターンを聞く、データは渡さない</div>
+      <div class="card-desc">
+        「このCSVの分析コードを書いて」ではなく「CSVファイル（カラム: date, amount, category）を集計するPythonコードを書いて」と<strong>構造だけ伝えてデータは渡さない</strong>
+      </div>
+    </div>
+  </div>
+
+  <h3>法的枠組みの概観 — 知っておくべき参照先</h3>
+
+  <p>生成AIの業務利用に関する法規制は急速に整備が進んでいます。詳細な法的判断は専門家に委ねるべきですが、以下の参照先の存在を知っておくことは有益です。</p>
+
+  <table class="ref-table">
+    <thead>
+      <tr><th>参照先</th><th>概要</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="tag tag-ctx">個人情報保護委員会</span></td>
+        <td>生成AIサービスの利用に関する注意喚起（2023年6月）。個人情報をプロンプトに入力する際のリスクを明確に指摘</td>
+      </tr>
+      <tr>
+        <td><span class="tag tag-ctx">AI事業者ガイドライン v1.1</span></td>
+        <td>総務省・経済産業省（2025年3月）。AI開発者・提供者・利用者の3者それぞれの指針を整理</td>
+      </tr>
+      <tr>
+        <td><span class="tag tag-ctx">デジタル庁 DS-920</span></td>
+        <td>行政における生成AI利活用ガイドライン（2025年5月）。要機密情報の取り扱いルールのひな形を提供</td>
+      </tr>
+      <tr>
+        <td><span class="tag tag-ctx">AI推進法</span></td>
+        <td>AI関連技術の研究開発・活用推進法（2025年9月全面施行）。罰則はないが、リスクベースのガバナンスを要請</td>
+      </tr>
+      <tr>
+        <td><span class="tag tag-ctx">Anthropic Privacy Center</span></td>
+        <td>Claude製品ごとのデータ保持ポリシー、学習利用の設定、ZDR契約の範囲を公開</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout info">
+    <div class="callout-title">💡 「全面禁止」は最適解ではない</div>
+    <p class="text-sm" style="margin-bottom:0;">
+      多くの組織が「リスクがあるから生成AIの業務利用を全面禁止する」という判断をしがちですが、これは逆効果を生むことが多いです。公式のツールを提供しなければ、従業員は個人アカウントで非公式に使い始め（シャドーIT）、管理不能な状態になります。「安全に使える範囲を明確にして公式に提供する」方が、結果的に組織全体のリスクは低くなります。
+    </p>
+  </div>
+
+  <div class="deepdive">
+    <div class="dd-label">🤖 AI DEEP DIVE PROMPT</div>
+    <div class="dd-title">自組織の生成AI利用ポリシーを検討したいとき</div>
+    <code onclick="copyPrompt(this)">当組織で生成AI（Claude Code等）を業務利用するためのガイドラインを策定したいと考えています。
+
+組織の概要：[業種・規模・主な業務内容]
+扱うデータ：[個人情報の有無、機密レベル]
+現在の利用状況：[すでに使っている人がいるか、公式な許可はあるか]
+技術的環境：[社内ITの管理体制]
+
+以下の構成で、A4サイズ2-3ページ程度のガイドライン案を作成してください：
+
+1. 基本方針（なぜ利用するか、何を守るか）
+2. 利用可能なツール・プランの指定
+3. 入力禁止情報の具体的リスト
+4. データの匿名化・抽象化ルール
+5. インシデント発生時の報告フロー
+6. 定期的な見直しの仕組み
+
+「禁止事項を並べるだけ」ではなく、現場が迷わず判断できる具体的なシチュエーション例を含めてください。
+法的な断定は避け、「確認すべき論点」として整理してください。</code>
+  </div>
+</section>
+
+<!-- ═══════════════ CHECKLIST ═══════════════ -->
+<section class="section" id="checklist">
+  <div class="section-num">PREFLIGHT CHECKLIST</div>
+  <h2>AIコーディングを始める前の自問リスト</h2>
+  <p class="section-subtitle">全問に答える必要はない。「この問いが存在する」と知っていること自体が防御になる</p>
+
+  <h3>🛠️ A. 環境 — 基盤は整っているか</h3>
+  <ul class="checklist" data-group="env">
+    <li>
+      <span class="q">Claude Code、VS Code、Git はインストール済みか？</span>
+      <span class="hint">3つのツールが揃って初めて安全なAIコーディング環境が成立する</span>
+    </li>
+    <li>
+      <span class="q">GitHubにリポジトリを作成し、最初のコミットを済ませたか？</span>
+      <span class="hint">AIに書かせる前に「元の状態」を保存しておくことが安全装置</span>
+    </li>
+    <li>
+      <span class="q">gh CLI はインストール済みか？</span>
+      <span class="hint">Claude CodeのGitHub連携がスムーズになる。イシュー作成やPRレビューに使える</span>
+    </li>
+  </ul>
+
+  <h3>📝 B. CLAUDE.md — AIへの指示書</h3>
+  <ul class="checklist" data-group="claudemd">
+    <li>
+      <span class="q">プロジェクトルートに CLAUDE.md を作成したか？</span>
+      <span class="hint">最小限でも「技術スタック」「重要コマンド」「ディレクトリ構造」があると結果が劇的に変わる</span>
+    </li>
+    <li>
+      <span class="q">ビルド・テスト・リントのコマンドを記載したか？</span>
+      <span class="hint">AIがコードを書いた後の検証に必要。記載がないと、AIが間違ったコマンドを推測する</span>
+    </li>
+    <li>
+      <span class="q">CLAUDE.mdに150個以上の指示を詰め込んでいないか？</span>
+      <span class="hint">指示過多はすべての指示の遵守率を一様に下げる</span>
+    </li>
+    <li>
+      <span class="q">コードスニペットではなく、ファイルパスへの参照を使っているか？</span>
+      <span class="hint">コードは変化する。CLAUDE.mdに埋め込むとすぐに陳腐化する</span>
+    </li>
+  </ul>
+
+  <h3>🧠 C. コンテキスト — AIの作業記憶を守る</h3>
+  <ul class="checklist" data-group="context">
+    <li>
+      <span class="q">タスクを小さなステップに分割したか？</span>
+      <span class="hint">大きすぎるタスクはコンテキストを消耗し、品質が低下する</span>
+    </li>
+    <li>
+      <span class="q">実装前に Plan Mode で計画を確認したか？</span>
+      <span class="hint">「考える」と「実装する」を分離すると、手戻りが大幅に減る</span>
+    </li>
+    <li>
+      <span class="q">タスク完了後に /clear でコンテキストをリセットしているか？</span>
+      <span class="hint">新鮮なコンテキストが次のタスクの品質を保証する</span>
+    </li>
+    <li>
+      <span class="q">計画や設計を外部ファイル（.mdなど）に書き出しているか？</span>
+      <span class="hint">セッションをまたいで参照できる「永続的な記憶」になる</span>
+    </li>
+  </ul>
+
+  <h3>🔄 D. ワークフロー — 安全な進め方</h3>
+  <ul class="checklist" data-group="workflow">
+    <li>
+      <span class="q">新しいブランチを切ってから作業を始めているか？</span>
+      <span class="hint">Git分岐がAIコーディング最大の安全装置。mainブランチで直接作業しない</span>
+    </li>
+    <li>
+      <span class="q">AIが書いたコードをレビュー（差分確認）してからコミットしているか？</span>
+      <span class="hint">AIが生成したコードの最終責任は人間にある</span>
+    </li>
+    <li>
+      <span class="q">テストを実行して動作確認しているか？</span>
+      <span class="hint">「動いた」と「正しい」は別。テストが設計の検証になる</span>
+    </li>
+    <li>
+      <span class="q">AIが間違えたパターンをCLAUDE.mdに記録しているか？</span>
+      <span class="hint">次回以降の同じ失敗を防ぐ。CLAUDE.mdは使いながら育てる文書</span>
+    </li>
+  </ul>
+
+  <h3>🧩 E. 拡張 — 必要に応じて追加</h3>
+  <ul class="checklist" data-group="extensions">
+    <li>
+      <span class="q">拡張機能を追加する前に、本当に必要か考えたか？</span>
+      <span class="hint">シンプルさが複雑さに勝つ。まずはCLAUDE.mdと/clearだけで十分かもしれない</span>
+    </li>
+    <li>
+      <span class="q">MCPサーバーの接続数が多すぎないか？</span>
+      <span class="hint">20kトークン以上のMCPはコンテキストを圧迫する</span>
+    </li>
+    <li>
+      <span class="q">Subagentに適切な権限制限（tools）を設定しているか？</span>
+      <span class="hint">レビュー用Subagentにはwrite権限不要。最小権限の原則</span>
+    </li>
+  </ul>
+
+  <h3>🔒 F. 情報管理 — 業務利用の安全を確保する</h3>
+  <ul class="checklist" data-group="security">
+    <li>
+      <span class="q">利用しているプランのデータ取り扱いポリシーを確認したか？</span>
+      <span class="hint">個人プラン（Free/Pro/Max）は学習利用がデフォルトでオンの場合がある。Settings → Data Privacy Controls を確認</span>
+    </li>
+    <li>
+      <span class="q">プロジェクト内に機密情報（APIキー、本番データ、個人情報）が含まれていないか？</span>
+      <span class="hint">Claude Codeが読み取ったファイルは全文がサーバーに送信される。.envや本番DBダンプはディレクトリから分離</span>
+    </li>
+    <li>
+      <span class="q">AIへの入力時にデータを匿名化・抽象化しているか？</span>
+      <span class="hint">実名→ユーザーA、実データ→ダミーデータ。構造だけ伝えてデータは渡さない</span>
+    </li>
+    <li>
+      <span class="q">組織で生成AI利用のガイドラインが策定されているか？</span>
+      <span class="hint">入力禁止情報のリスト、許可ツール一覧、インシデント報告フロー。A4で1枚でもよいので「書かれたルール」を</span>
+    </li>
+    <li>
+      <span class="q">業務利用の場合、法人向けプラン（Team/Enterprise/API）を検討したか？</span>
+      <span class="hint">学習利用デフォルトオフ、カスタム保持期間、監査ログ等。業務利用の安全要件を満たす最も現実的な手段</span>
+    </li>
+  </ul>
+</section>
+
+<!-- ═══════════════ Keywords ═══════════════ -->
+<section class="section" id="keywords">
+  <div class="section-num">KEYWORD INDEX</div>
+  <h2>用語索引 — AIと深掘りするための入口</h2>
+  <p class="section-subtitle">各用語をクリックすると、AIに質問するためのプロンプトをコピーします</p>
+
+  <h3>Claude Code 基本</h3>
+  <div class="kw-grid">
+    <div class="kw-item">Claude Code <span class="kw-en">Agentic Coding Tool</span></div>
+    <div class="kw-item">CLAUDE.md <span class="kw-en">Project Context File</span></div>
+    <div class="kw-item">コンテキストウィンドウ <span class="kw-en">Context Window</span></div>
+    <div class="kw-item">コンパクション <span class="kw-en">Compaction</span></div>
+    <div class="kw-item">Plan Mode <span class="kw-en">Planning Mode</span></div>
+    <div class="kw-item">トークン <span class="kw-en">Token</span></div>
+  </div>
+
+  <h3>拡張機能</h3>
+  <div class="kw-grid">
+    <div class="kw-item">Skills <span class="kw-en">Agent Skills</span></div>
+    <div class="kw-item">サブエージェント <span class="kw-en">Subagents</span></div>
+    <div class="kw-item">Hooks <span class="kw-en">Lifecycle Hooks</span></div>
+    <div class="kw-item">スラッシュコマンド <span class="kw-en">Slash Commands</span></div>
+    <div class="kw-item">MCP <span class="kw-en">Model Context Protocol</span></div>
+    <div class="kw-item">プラグイン <span class="kw-en">Plugins</span></div>
+    <div class="kw-item">段階的開示 <span class="kw-en">Progressive Disclosure</span></div>
+    <div class="kw-item">エージェントチーム <span class="kw-en">Agent Teams</span></div>
+  </div>
+
+  <h3>開発ツール</h3>
+  <div class="kw-grid">
+    <div class="kw-item">VS Code <span class="kw-en">Visual Studio Code</span></div>
+    <div class="kw-item">Git <span class="kw-en">Version Control</span></div>
+    <div class="kw-item">GitHub <span class="kw-en">Code Hosting</span></div>
+    <div class="kw-item">gh CLI <span class="kw-en">GitHub CLI</span></div>
+    <div class="kw-item">ブランチ <span class="kw-en">Branch</span></div>
+    <div class="kw-item">プルリクエスト <span class="kw-en">Pull Request</span></div>
+    <div class="kw-item">差分表示 <span class="kw-en">Git Diff</span></div>
+    <div class="kw-item">コミット <span class="kw-en">Commit</span></div>
+  </div>
+
+  <h3>情報管理・セキュリティ</h3>
+  <div class="kw-grid">
+    <div class="kw-item">Zero Data Retention <span class="kw-en">ZDR</span></div>
+    <div class="kw-item">データ保持ポリシー <span class="kw-en">Data Retention Policy</span></div>
+    <div class="kw-item">学習利用オプトアウト <span class="kw-en">Training Opt-out</span></div>
+    <div class="kw-item">シャドーIT <span class="kw-en">Shadow IT</span></div>
+    <div class="kw-item">データ匿名化 <span class="kw-en">Data Anonymization</span></div>
+    <div class="kw-item">managed-settings.json <span class="kw-en">Org Policy File</span></div>
+    <div class="kw-item">個人情報保護法 <span class="kw-en">APPI</span></div>
+    <div class="kw-item">AI事業者ガイドライン <span class="kw-en">AI Business Guidelines</span></div>
+  </div>
+
+  <h3>コンセプト・プラクティス</h3>
+  <div class="kw-grid">
+    <div class="kw-item">コンテキスト管理 <span class="kw-en">Context Management</span></div>
+    <div class="kw-item">コンテキストエンジニアリング <span class="kw-en">Context Engineering</span></div>
+    <div class="kw-item">エージェントループ <span class="kw-en">Agentic Loop</span></div>
+    <div class="kw-item">チェックポイント <span class="kw-en">Checkpoints</span></div>
+    <div class="kw-item">ヘッドレスモード <span class="kw-en">Headless Mode</span></div>
+    <div class="kw-item">パーミッションモード <span class="kw-en">Permission Mode</span></div>
+    <div class="kw-item">計画の外部化 <span class="kw-en">Externalized Planning</span></div>
+    <div class="kw-item">イテレーティブ開発 <span class="kw-en">Iterative Development</span></div>
+  </div>
+
+  <div class="deepdive mt-md">
+    <div class="dd-label">🤖 AI DEEP DIVE PROMPT</div>
+    <div class="dd-title">知らない用語について体系的に学びたいとき</div>
+    <code onclick="copyPrompt(this)">以下の用語について、Claude Codeを使ったAIコーディングの文脈で教えてください。
+
+用語：[ここに用語を入れる]
+
+以下の形式で回答してください：
+1. 一言での定義
+2. なぜAIコーディングで重要か（知らないとどんな問題が起きるか）
+3. 具体例：Claude Codeを使った開発での実際の使用場面
+4. 関連する概念（この用語を理解すると次に学ぶべき概念）
+5. 初学者が最初に試すべき実践的なアクション1つ
+
+プログラミング初学者向けに、専門用語の初出時には簡単な説明を添えてください。</code>
+  </div>
+</section>
+
+</main>
+
+<div id="sr-announcer" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+
+<!-- ═══════════════ Footer ═══════════════ -->
+<footer class="footer">
+  <div class="footer-inner">
+    <p><strong>公開情報</strong></p>
+    <p>
+      バージョン: v0.1.0<br>
+      最終更新: 2026-02-14<br>
+      更新方針: 必要時に随時更新（単一ページ運用）<br>
+      姉妹ページ: Vibe Coding Preflight Guide（コードを書く前に考えるべきこと）
+    </p>
+    <p><strong>参照元</strong></p>
+    <p>
+      Anthropic「Claude Code: Best practices for agentic coding」—
+      <a href="https://www.anthropic.com/engineering/claude-code-best-practices" target="_blank" rel="noopener">anthropic.com</a><br>
+      Anthropic「Claude Code Documentation」—
+      <a href="https://code.claude.com/docs" target="_blank" rel="noopener">code.claude.com</a><br>
+      Anthropic「Extend Claude Code」—
+      <a href="https://code.claude.com/docs/en/features-overview" target="_blank" rel="noopener">Features Overview</a><br>
+      Anthropic「Skill authoring best practices」—
+      <a href="https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices" target="_blank" rel="noopener">Skills Best Practices</a><br>
+      Anthropic「Customize Claude Code with plugins」—
+      <a href="https://www.anthropic.com/news/claude-code-plugins" target="_blank" rel="noopener">Plugins</a><br>
+      HumanLayer「Writing a good CLAUDE.md」—
+      <a href="https://www.humanlayer.dev/blog/writing-a-good-claude-md" target="_blank" rel="noopener">humanlayer.dev</a><br>
+      Chris Dzombak「Getting Good Results from Claude Code」—
+      <a href="https://www.dzombak.com/blog/2025/08/getting-good-results-from-claude-code/" target="_blank" rel="noopener">dzombak.com</a><br>
+      alexop.dev「Claude Code Customization Guide」—
+      <a href="https://alexop.dev/posts/claude-code-customization-guide-claudemd-skills-subagents/" target="_blank" rel="noopener">alexop.dev</a><br>
+      rosmur「Claude Code Best Practices（コミュニティまとめ）」—
+      <a href="https://rosmur.github.io/claudecode-best-practices/" target="_blank" rel="noopener">GitHub Pages</a>
+    </p>
+    <p style="margin-top:16px;">
+      本ガイドは「Vibe Coding Preflight Guide」の続編として、前編で整理した設計・要件の知識をAIにどう伝え、どう協働するかを実践面からまとめたものです。
+      内容はAnthropic公式ドキュメントおよびコミュニティの実践知見に基づいています。
+      Claude Codeは急速に進化しているため、最新情報は公式ドキュメントを確認してください。
+    </p>
+  </div>
+</footer>
+
+<script src="assets/js/main.js" defer></script>
+</body>
+</html>
