@@ -231,6 +231,39 @@
     .progress-map { flex-wrap: wrap; gap: 4px; justify-content: center; }
     .progress-connector { width: 12px; }
   }
+  /* TOC: 項目を中央寄せ（main.css の max-width 制限をこのページのみ解除） */
+  .toc-inner {
+    justify-content: center;
+    max-width: none;
+  }
+  /* 技術用語ツールチップ */
+  .term {
+    border-bottom: 1px dotted var(--accent);
+    cursor: help;
+    position: relative;
+  }
+  .term::after {
+    content: attr(data-tip);
+    position: absolute;
+    bottom: calc(100% + 6px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: #1e1e2e;
+    color: #cdd6f4;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 11px;
+    line-height: 1.5;
+    max-width: 220px;
+    white-space: normal;
+    text-align: left;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+    z-index: 200;
+  }
+  .term:hover::after,
+  .term:focus::after { opacity: 1; }
 </style>
 </head>
 <body>
@@ -246,7 +279,7 @@
       Claude Codeのインストールから、日報作成ツールの開発、GitHub Pagesでの公開まで。<br>
       すべての手順を一つずつ追いかけて、AIコーディングの一連の流れを体験する。
     </p>
-    <div class="hero-companion">COMPANION TO: <a href="/" style="color:var(--accent-light);text-decoration:underline;text-underline-offset:2px;">AI Coding Companion Guide</a></div>
+    <div class="hero-companion">COMPANION TO: <a href="https://hirokioshiro.github.io/ai_coding_guide/" style="color:var(--accent-light);text-decoration:underline;text-underline-offset:2px;">AI Coding Companion Guide</a></div>
   </div>
 </header>
 
@@ -273,7 +306,7 @@
   <h2>このチュートリアルで作るもの</h2>
   <p class="section-subtitle">Claude Codeと一緒に、業務で使える日報作成ツールをゼロから作る</p>
 
-  <p>このチュートリアルでは、Claude Codeを使って<strong>「日報作成ツール」</strong>を1から作り、GitHubにプッシュし、GitHub Pagesで公開するところまでを体験します。プログラミングの経験がほとんどなくても、手順通りに進めれば完成できるように構成しています。</p>
+  <p>このチュートリアルでは、Claude Codeを使って<strong>「日報作成ツール」</strong>を1から作り、<span class="term" tabindex="0" data-tip="Gitで管理したコードをインターネット上に保存・公開できるサービス">GitHub</span>に<span class="term" tabindex="0" data-tip="ローカルのパソコンにある変更をGitHubへ送信すること">プッシュ</span>し、GitHub Pagesで公開するところまでを体験します。プログラミングの経験がほとんどなくても、手順通りに進めれば完成できるように構成しています。</p>
 
   <h3>完成する日報ツールの機能</h3>
   <div class="card-grid">
@@ -321,7 +354,7 @@
   <div class="callout warn">
     <div class="callout-title">⚠ 前提知識</div>
     <p class="text-sm" style="margin-bottom:0;">
-      このチュートリアルは<strong>プログラミング初学者</strong>を対象にしています。HTMLやJavaScriptの知識は不要です。ただし、ターミナル（コマンドライン）を開いてコマンドを入力する操作が出てきます。「ターミナルを触ったことがない」場合でも、手順通りにコピー＆ペーストすれば進められるように書いています。
+      このチュートリアルは<strong>プログラミング初学者</strong>を対象にしています。HTMLやJavaScriptの知識は不要です。ただし、<span class="term" tabindex="0" data-tip="キーボードで命令を入力してパソコンを操作するツール。Macは「ターミナル」アプリ、Windowsは「PowerShell」">ターミナル</span>（コマンドライン）を開いてコマンドを入力する操作が出てきます。「ターミナルを触ったことがない」場合でも、手順通りにコピー＆ペーストすれば進められるように書いています。
     </p>
   </div>
 
@@ -396,7 +429,7 @@
     <div class="callout-title">💡 ターミナルの開き方</div>
     <p class="text-sm" style="margin-bottom:0;">
       <strong>Mac:</strong> Spotlight検索（<kbd>⌘</kbd>+<kbd>Space</kbd>）で「ターミナル」と入力して開く。<br>
-      <strong>Windows:</strong> スタートメニューから「PowerShell」を検索して開く。
+      <strong>Windows:</strong> スタートメニューから「<span class="term" tabindex="0" data-tip="Windowsのターミナル。キーボードで命令を入力してパソコンを操作する">PowerShell</span>」（Windowsのターミナル）を検索して開く。
     </p>
   </div>
 
@@ -416,7 +449,7 @@
 
   <!-- Claude Code -->
   <h3>1-2. Claude Code のインストール</h3>
-  <p><strong>Claude Code</strong>はターミナルで動くAIコーディングツールです。npmという（Node.jsに付属する）パッケージ管理ツールでインストールします。</p>
+  <p><strong>Claude Code</strong>はターミナルで動くAIコーディングツールです。<span class="term" tabindex="0" data-tip="Node.jsに付属するツール。パッケージ（機能の部品）を簡単にインストールできる">npm</span>という（Node.jsに付属する）パッケージ管理ツールでインストールします。</p>
 
   <div class="cmd" onclick="copyCmd(this)"><span class="prompt">$ </span>npm install -g @anthropic-ai/claude-code</div>
 
@@ -465,7 +498,7 @@
 
   <!-- Git -->
   <h3>1-4. Git のインストールと初期設定</h3>
-  <p><strong>Git</strong>（ギット）はコードのバージョン管理ツールです。「いつでも前の状態に戻せる」安全装置として機能します。</p>
+  <p><strong class="term" tabindex="0" data-tip="コードの変更履歴を記録するツール。間違えても元に戻せる">Git</strong>（ギット）はコードのバージョン管理ツールです。「いつでも前の状態に戻せる」安全装置として機能します。</p>
 
   <p>Macの場合、Gitはすでに入っていることが多いです。確認してみましょう：</p>
   <div class="cmd" onclick="copyCmd(this)"><span class="prompt">$ </span>git --version</div>
@@ -481,7 +514,7 @@
     <a href="https://git-scm.com/downloads/win" target="_blank" rel="noopener">git-scm.com</a> からWindows用インストーラをダウンロードしてください。インストール時の設定は基本的にデフォルトでOKです。インストール後、PowerShellを開き直してから <code class="font-mono" style="font-size:11px;">git --version</code> で確認してください。
   </div>
 
-  <p>Gitの初期設定として、ユーザー名とメールアドレスを登録します。これはコミット（変更記録）に表示される情報です：</p>
+  <p>Gitの初期設定として、ユーザー名とメールアドレスを登録します。これは<span class="term" tabindex="0" data-tip="変更内容にメモをつけて記録すること。ゲームのセーブポイントのイメージ">コミット</span>（変更記録）に表示される情報です：</p>
 
   <div class="cmd" onclick="copyCmd(this)"><span class="prompt">$ </span>git config --global user.name "あなたの名前"</div>
   <div class="cmd" onclick="copyCmd(this)"><span class="prompt">$ </span>git config --global user.email "あなたのメールアドレス"</div>
@@ -564,7 +597,7 @@
   </div>
 
   <h3>2-3. GitHubにリモートリポジトリを作成</h3>
-  <p>gh CLI を使って、GitHubにリポジトリを作成し、ローカルと接続します。</p>
+  <p>gh CLI を使って、GitHubに<span class="term" tabindex="0" data-tip="プロジェクトのファイルをGitで管理するフォルダのこと">リポジトリ</span>（プロジェクトのフォルダ）を作成し、ローカルと接続します。</p>
 
   <div class="cmd" onclick="copyCmd(this)"><span class="prompt">$ </span>gh repo create daily-report-tool --public --source=. --remote=origin</div>
 
@@ -697,7 +730,7 @@
   <div class="callout warn">
     <div class="callout-title">⚠ 重要：ブランチを切ってから作業する</div>
     <p class="text-sm" style="margin-bottom:0;">
-      AIにコードを書かせる前に、必ず新しいブランチ（作業用の分岐）を作ります。何か問題が起きても、ブランチごと捨てれば元の状態に戻せます。これがAIコーディングにおける<strong>最も重要な安全習慣</strong>です。
+      AIにコードを書かせる前に、必ず新しい<span class="term" tabindex="0" data-tip="本番のコードを変えずに作業できるコピー。問題が起きてもブランチごと捨てれば元に戻せる">ブランチ</span>（作業用の分岐）を作ります。何か問題が起きても、ブランチごと捨てれば元の状態に戻せます。これがAIコーディングにおける<strong>最も重要な安全習慣</strong>です。
     </p>
   </div>
 
@@ -1066,7 +1099,7 @@
       <div class="card-icon">📖</div>
       <div class="card-title orange-t">コンパニオンガイドを深読みする</div>
       <div class="card-desc">
-        <a href="/" style="color:var(--orange);">AI Coding Companion Guide</a> のコンテキスト管理、拡張機能、情報管理のセクションで、今回体験したことの「なぜそうするのか」を理解する
+        <a href="https://hirokioshiro.github.io/ai_coding_guide/" style="color:var(--orange);">AI Coding Companion Guide</a> のコンテキスト管理、拡張機能、情報管理のセクションで、今回体験したことの「なぜそうするのか」を理解する
       </div>
     </div>
   </div>
@@ -1116,7 +1149,7 @@
     </p>
     <p><strong>関連ガイド</strong></p>
     <p>
-      AIとのコーディングの知識地図 — <a href="/">AI Coding Companion Guide</a><br>
+      AIとのコーディングの知識地図 — <a href="https://hirokioshiro.github.io/ai_coding_guide/">AI Coding Companion Guide</a><br>
       コードを書く前に考えるべきこと — <a href="https://hirokioshiro.github.io/vibe_coding_preflight_guide/" target="_blank" rel="noopener">Vibe Coding Preflight Guide</a><br>
       「どう作るか」を考える — <a href="https://hirokioshiro.github.io/software_design_guide/" target="_blank" rel="noopener">Software Design Guide</a>
     </p>
