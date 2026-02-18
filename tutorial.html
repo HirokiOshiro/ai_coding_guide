@@ -1,0 +1,1231 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>はじめてのAIコーディング — 日報作成ツールを作ろう | AI Coding Companion Guide</title>
+<meta name="description" content="Claude Codeを使って、日報作成ツールをゼロから作りGitHub Pagesで公開するまでのハンズオンチュートリアル。インストールからデプロイまで、すべての手順を初学者向けに解説。">
+<meta name="robots" content="index,follow">
+<meta name="theme-color" content="#1a1a1a">
+<link rel="canonical" href="https://oshirohiroki.github.io/tutorial.html">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:title" content="はじめてのAIコーディング — 日報作成ツールを作ろう">
+<meta property="og:description" content="Claude Codeで日報ツールをゼロから作り、GitHub Pagesで公開するまでのハンズオンチュートリアル。">
+<meta property="og:site_name" content="AI Coding Companion Guide">
+<meta property="og:url" content="https://oshirohiroki.github.io/tutorial.html">
+<meta property="og:image" content="https://oshirohiroki.github.io/assets/images/ogp-default.svg">
+<meta property="og:image:secure_url" content="https://oshirohiroki.github.io/assets/images/ogp-default.svg">
+<meta property="og:image:type" content="image/svg+xml">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="AI Coding Companion Guide — はじめてのAIコーディング チュートリアル">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="はじめてのAIコーディング — 日報作成ツールを作ろう">
+<meta name="twitter:description" content="Claude Codeで日報ツールをゼロから作り、GitHub Pagesで公開するまでのハンズオンチュートリアル。">
+<meta name="twitter:image" content="https://oshirohiroki.github.io/assets/images/ogp-default.svg">
+<meta name="twitter:image:alt" content="AI Coding Companion Guide — はじめてのAIコーディング チュートリアル">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%A4%96%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&family=Noto+Serif+JP:wght@400;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/main.css">
+<style>
+  /* Tutorial-specific additions */
+  .step-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    background: var(--accent);
+    color: #fff;
+    border-radius: 50%;
+    font-family: var(--mono);
+    font-size: 14px;
+    font-weight: 700;
+    margin-right: 12px;
+    flex-shrink: 0;
+  }
+  .step-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+  .cmd {
+    display: block;
+    background: #1e1e2e;
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin: 12px 0;
+    font-family: var(--mono);
+    font-size: 13px;
+    line-height: 1.7;
+    color: #cdd6f4;
+    overflow-x: auto;
+    position: relative;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .cmd:hover { background: #24243a; }
+  .cmd::after {
+    content: '📋';
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    font-size: 12px;
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
+  .cmd:hover::after { opacity: 1; }
+  .cmd.copied::after {
+    content: '✓';
+    opacity: 1;
+    color: #34d399;
+  }
+  .cmd .prompt { color: #7f849c; user-select: none; }
+  .cmd .comment { color: #7f849c; }
+  .win-note {
+    background: #f8f4ff;
+    border: 1px solid #e9d5ff;
+    border-radius: 6px;
+    padding: 12px 16px;
+    margin: 12px 0;
+    font-size: 13px;
+  }
+  .win-note::before {
+    content: '🪟 Windowsの場合：';
+    font-weight: 700;
+    color: var(--purple);
+    display: block;
+    margin-bottom: 4px;
+    font-size: 12px;
+  }
+  .progress-map {
+    display: flex;
+    gap: 0;
+    align-items: center;
+    margin: 24px 0;
+    overflow-x: auto;
+    padding-bottom: 8px;
+  }
+  .progress-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 80px;
+    font-size: 11px;
+    color: var(--text-light);
+    text-align: center;
+  }
+  .progress-step .p-num {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--border);
+    color: var(--text-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .progress-step.active .p-num {
+    background: var(--accent);
+    color: #fff;
+  }
+  .progress-step.done .p-num {
+    background: var(--green);
+    color: #fff;
+  }
+  .progress-connector {
+    width: 24px;
+    height: 2px;
+    background: var(--border);
+    flex-shrink: 0;
+  }
+  .ai-prompt {
+    background: linear-gradient(135deg, #1e1b4b, #312e81);
+    color: #e0e7ff;
+    border-radius: 10px;
+    padding: 20px 24px;
+    margin: 16px 0;
+    font-size: 13px;
+  }
+  .ai-prompt .ai-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: #a5b4fc;
+    margin-bottom: 6px;
+  }
+  .ai-prompt pre {
+    font-family: var(--mono);
+    font-size: 12.5px;
+    line-height: 1.8;
+    color: #c7d2fe;
+    white-space: pre-wrap;
+    word-break: break-all;
+    margin: 0;
+  }
+  .output-example {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin: 12px 0;
+    font-size: 13px;
+  }
+  .output-example::before {
+    content: '✅ 期待される結果：';
+    font-weight: 700;
+    color: var(--green);
+    display: block;
+    margin-bottom: 6px;
+    font-size: 12px;
+  }
+  .trouble {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin: 12px 0;
+    font-size: 13px;
+  }
+  .trouble::before {
+    content: '🔧 うまくいかないとき：';
+    font-weight: 700;
+    color: var(--red);
+    display: block;
+    margin-bottom: 6px;
+    font-size: 12px;
+  }
+  .file-tree {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin: 16px 0;
+    font-family: var(--mono);
+    font-size: 12.5px;
+    line-height: 1.8;
+    color: var(--text);
+  }
+  .file-tree .dir { color: var(--accent); font-weight: 500; }
+  .file-tree .file { color: var(--text-light); }
+  .file-tree .desc { color: var(--text-light); font-family: var(--sans); font-size: 11px; }
+  .time-est {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-light);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 2px 8px;
+    margin-left: 8px;
+  }
+  @media (max-width: 640px) {
+    .progress-map { flex-wrap: wrap; gap: 4px; justify-content: center; }
+    .progress-connector { width: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<a href="#main-content" class="skip-link">本文へスキップ</a>
+
+<!-- ═══════════════ Hero ═══════════════ -->
+<header class="hero">
+  <div class="hero-inner">
+    <div class="hero-tag">HANDS-ON TUTORIAL</div>
+    <h1>はじめてのAIコーディング<br><em>日報ツールを作ろう</em></h1>
+    <p class="hero-desc">
+      Claude Codeのインストールから、日報作成ツールの開発、GitHub Pagesでの公開まで。<br>
+      すべての手順を一つずつ追いかけて、AIコーディングの一連の流れを体験する。
+    </p>
+    <div class="hero-companion">COMPANION TO: <a href="/" style="color:var(--accent-light);text-decoration:underline;text-underline-offset:2px;">AI Coding Companion Guide</a></div>
+  </div>
+</header>
+
+<!-- ═══════════════ TOC ═══════════════ -->
+<nav class="toc-bar" aria-label="ページ内目次">
+  <div class="toc-inner">
+    <a href="#overview" class="toc-link">概要</a>
+    <a href="#step0" class="toc-link">Step 0</a>
+    <a href="#step1" class="toc-link">Step 1</a>
+    <a href="#step2" class="toc-link">Step 2</a>
+    <a href="#step3" class="toc-link">Step 3</a>
+    <a href="#step4" class="toc-link">Step 4</a>
+    <a href="#step5" class="toc-link">Step 5</a>
+    <a href="#step6" class="toc-link">Step 6</a>
+    <a href="#wrapup" class="toc-link">まとめ</a>
+  </div>
+</nav>
+
+<main class="main" id="main-content">
+
+<!-- ═══════════════ Overview ═══════════════ -->
+<section class="section" id="overview">
+  <div class="section-num">OVERVIEW</div>
+  <h2>このチュートリアルで作るもの</h2>
+  <p class="section-subtitle">Claude Codeと一緒に、業務で使える日報作成ツールをゼロから作る</p>
+
+  <p>このチュートリアルでは、Claude Codeを使って<strong>「日報作成ツール」</strong>を1から作り、GitHubにプッシュし、GitHub Pagesで公開するところまでを体験します。プログラミングの経験がほとんどなくても、手順通りに進めれば完成できるように構成しています。</p>
+
+  <h3>完成する日報ツールの機能</h3>
+  <div class="card-grid">
+    <div class="card green">
+      <div class="card-icon">📝</div>
+      <div class="card-title green-t">日報の入力</div>
+      <div class="card-desc">日付、今日やったこと、明日やること、困っていること、メモを入力できるフォーム</div>
+    </div>
+    <div class="card blue">
+      <div class="card-icon">💾</div>
+      <div class="card-title blue-t">保存と閲覧</div>
+      <div class="card-desc">入力した日報をブラウザに保存（localStorage）。過去の日報を一覧で確認できる</div>
+    </div>
+    <div class="card purple">
+      <div class="card-icon">📋</div>
+      <div class="card-title purple-t">コピー＆共有</div>
+      <div class="card-desc">日報をテキスト形式でクリップボードにコピー。SlackやTeamsに貼り付けて共有できる</div>
+    </div>
+  </div>
+
+  <div class="callout info">
+    <div class="callout-title">💡 なぜ「日報ツール」なのか</div>
+    <p class="text-sm" style="margin-bottom:0;">
+      日報ツールは、フォーム入力・データの保存・一覧表示・テキスト出力という、Webアプリの基本的な要素をすべて含んでいます。かつ、業務でそのまま使える実用性もあります。HTML・CSS・JavaScriptだけで動くため、サーバーが不要でGitHub Pagesでそのまま公開できる点もチュートリアルの題材として適しています。
+    </p>
+  </div>
+
+  <h3>全体の流れ</h3>
+  <div class="progress-map">
+    <div class="progress-step"><div class="p-num">0</div>前提確認</div>
+    <div class="progress-connector"></div>
+    <div class="progress-step"><div class="p-num">1</div>インストール</div>
+    <div class="progress-connector"></div>
+    <div class="progress-step"><div class="p-num">2</div>プロジェクト作成</div>
+    <div class="progress-connector"></div>
+    <div class="progress-step"><div class="p-num">3</div>CLAUDE.md</div>
+    <div class="progress-connector"></div>
+    <div class="progress-step"><div class="p-num">4</div>AIで開発</div>
+    <div class="progress-connector"></div>
+    <div class="progress-step"><div class="p-num">5</div>レビュー&amp;コミット</div>
+    <div class="progress-connector"></div>
+    <div class="progress-step"><div class="p-num">6</div>公開</div>
+  </div>
+
+  <div class="callout warn">
+    <div class="callout-title">⚠ 前提知識</div>
+    <p class="text-sm" style="margin-bottom:0;">
+      このチュートリアルは<strong>プログラミング初学者</strong>を対象にしています。HTMLやJavaScriptの知識は不要です。ただし、ターミナル（コマンドライン）を開いてコマンドを入力する操作が出てきます。「ターミナルを触ったことがない」場合でも、手順通りにコピー＆ペーストすれば進められるように書いています。
+    </p>
+  </div>
+
+  <h3>所要時間の目安</h3>
+  <table class="ref-table">
+    <thead><tr><th>ステップ</th><th>内容</th><th>目安</th></tr></thead>
+    <tbody>
+      <tr><td>Step 0–1</td><td>前提確認とインストール</td><td>20〜40分</td></tr>
+      <tr><td>Step 2–3</td><td>プロジェクト作成とCLAUDE.md</td><td>10〜15分</td></tr>
+      <tr><td>Step 4</td><td>Claude Codeで日報ツールを開発</td><td>20〜30分</td></tr>
+      <tr><td>Step 5–6</td><td>レビュー、コミット、公開</td><td>10〜15分</td></tr>
+      <tr><td colspan="2" style="font-weight:700;">合計</td><td style="font-weight:700;">約60〜100分</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ═══════════════ Step 0 ═══════════════ -->
+<section class="section" id="step0">
+  <div class="section-num">STEP 0</div>
+  <h2>始める前に — 必要なアカウントの準備</h2>
+  <p class="section-subtitle">ツールのインストールに入る前に、2つのアカウントを用意する <span class="time-est">⏱ 5–10分</span></p>
+
+  <p>Claude CodeとGitHubを使うために、以下の2つのアカウントが必要です。すでに持っている場合はStep 1に進んでください。</p>
+
+  <h3>1. Anthropicアカウント（Claude用）</h3>
+  <p>Claude Codeを使うには、Anthropicのアカウントと<strong>有料プラン</strong>（Pro以上）またはAPIクレジットが必要です。</p>
+  <ul class="checklist" data-group="accounts">
+    <li>
+      <span class="q"><a href="https://claude.ai" target="_blank" rel="noopener">claude.ai</a> でアカウントを作成する</span>
+      <span class="hint">メールアドレスまたはGoogleアカウントでサインアップ</span>
+    </li>
+    <li>
+      <span class="q">Claude ProまたはMaxプランに加入する（月額$20〜）</span>
+      <span class="hint">Free プランではClaude Codeは利用できない。あるいはAPI利用（従量課金）でも可</span>
+    </li>
+  </ul>
+
+  <div class="callout info">
+    <div class="callout-title">💡 プランの選び方</div>
+    <p class="text-sm" style="margin-bottom:0;">
+      学習目的ならClaude Pro（月額$20）で十分です。APIの従量課金を選ぶ場合は、<a href="https://console.anthropic.com" target="_blank" rel="noopener">console.anthropic.com</a> でAPIキーを取得し、クレジットをチャージしてください。このチュートリアルの日報ツール開発で使用するAPI費用は数百円程度です。
+    </p>
+  </div>
+
+  <h3>2. GitHubアカウント</h3>
+  <p>コードの管理と公開に使います。無料プランで十分です。</p>
+  <ul class="checklist" data-group="accounts2">
+    <li>
+      <span class="q"><a href="https://github.com/signup" target="_blank" rel="noopener">github.com/signup</a> でアカウントを作成する</span>
+      <span class="hint">ユーザー名は公開URLの一部になる（例: username.github.io）。後から変更も可能</span>
+    </li>
+  </ul>
+</section>
+
+<!-- ═══════════════ Step 1 ═══════════════ -->
+<section class="section" id="step1">
+  <div class="section-num">STEP 1</div>
+  <h2>ツールのインストール</h2>
+  <p class="section-subtitle">Node.js → Claude Code → VS Code → Git → gh CLI の順に入れていく <span class="time-est">⏱ 15–30分</span></p>
+
+  <p>開発に必要なツールを順番にインストールします。各ツールが何のために必要かも簡単に説明します。</p>
+
+  <!-- Node.js -->
+  <h3>1-1. Node.js のインストール</h3>
+  <p><strong>Node.js</strong>（ノードジェイエス）は、JavaScriptをパソコン上で実行するための環境です。Claude Code自体がNode.jsで動いているため、先にインストールが必要です。</p>
+
+  <p><a href="https://nodejs.org/" target="_blank" rel="noopener">nodejs.org</a> にアクセスし、<strong>LTS版</strong>（長期サポート版）をダウンロードしてインストールしてください。</p>
+
+  <p>インストールが完了したら、ターミナルを開いて以下のコマンドで確認します。</p>
+
+  <div class="callout tip">
+    <div class="callout-title">💡 ターミナルの開き方</div>
+    <p class="text-sm" style="margin-bottom:0;">
+      <strong>Mac:</strong> Spotlight検索（<kbd>⌘</kbd>+<kbd>Space</kbd>）で「ターミナル」と入力して開く。<br>
+      <strong>Windows:</strong> スタートメニューから「PowerShell」を検索して開く。
+    </p>
+  </div>
+
+  <div class="cmd" onclick="copyCmd(this)"><span class="prompt">$ </span>node --version</div>
+
+  <div class="output-example">
+    <code class="font-mono" style="font-size:12px;">v22.x.x</code>（数字は異なっていてOK。v18以上であれば問題なし）
+  </div>
+
+  <div class="trouble">
+    <code class="font-mono" style="font-size:12px;">command not found: node</code> と表示された場合、ターミナルを一度閉じて開き直してください。それでもダメな場合は、Node.jsのインストーラをもう一度実行してみてください。
+  </div>
+
+  <div class="win-note">
+    Node.jsのインストーラは Windows / Mac 共通で <a href="https://nodejs.org/" target="_blank" rel="noopener">nodejs.org</a> からダウンロードできます。Windowsでは <code class="font-mono" style="font-size:11px;">.msi</code> 形式のインストーラを使ってください。インストール後は<strong>PowerShellを管理者として実行</strong>して確認してください。
+  </div>
+
+  <!-- Claude Code -->
+  <h3>1-2. Claude Code のインストール</h3>
+  <p><strong>Claude Code</strong>はターミナルで動くAIコーディングツールです。npmという（Node.jsに付属する）パッケージ管理ツールでインストールします。</p>
+
+  <div class="cmd" onclick="copyCmd(this)"><span class="prompt">$ </span>npm install -g @anthropic-ai/claude-code</div>
+
+  <p>インストールが終わったら、確認します：</p>
+  <div class="cmd" onclick="copyCmd(this)"><span class="prompt">$ </span>claude --version</div>
+
+  <div class="output-example">
+    バージョン番号が表示されればOKです。
+  </div>
+
+  <p>次に、Claude Codeを起動してアカウントを接続します：</p>
+  <div class="cmd" onclick="copyCmd(this)"><span class="prompt">$ </span>claude</div>
+
+  <p>初回起動時にブラウザが開き、Anthropicアカウントでのログインを求められます。画面の指示に従ってログインしてください。完了するとターミナルに戻り、Claude Codeが使えるようになります。</p>
+
+  <p>確認が終わったら、いったん <code class="font-mono">/exit</code> と入力してClaude Codeを終了しておきます。</p>
+  <div class="cmd" onclick="copyCmd(this)"><span class="prompt">&gt; </span>/exit</div>
+
+  <div class="trouble">
+    <code class="font-mono" style="font-size:12px;">npm: permission denied</code> と出た場合（Mac）：<br>
+    <code class="font-mono" style="font-size:12px;">sudo npm install -g @anthropic-ai/claude-code</code> で再実行してください（パスワード入力を求められます）。
+  </div>
+
+  <div class="win-note">
+    Windowsでは、PowerShellを<strong>管理者として実行</strong>してからインストールコマンドを実行してください。右クリック →「管理者として実行」で開けます。
+  </div>
+
+  <!-- VS Code -->
+  <h3>1-3. VS Code のインストール</h3>
+  <p><strong>VS Code</strong>（Visual Studio Code）は無料のコードエディタです。AIが書いたコードを「見る」ための道具として使います。</p>
+
+  <p><a href="https://code.visualstudio.com/" target="_blank" rel="noopener">code.visualstudio.com</a> からダウンロードしてインストールしてください。</p>
+
+  <p>インストール後、ターミナルから <code class="font-mono">code</code> コマンドで起動できるようにしておくと便利です：</p>
+
+  <div class="callout tip">
+    <div class="callout-title">💡 Mac: code コマンドの設定</div>
+    <p class="text-sm" style="margin-bottom:0;">
+      VS Codeを開き、<kbd>⌘</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd> でコマンドパレットを開く → 「Shell Command: Install 'code' command in PATH」を選択。これで、ターミナルから <code class="font-mono">code .</code> と打つとVS Codeが開くようになります。
+    </p>
+  </div>
+
+  <div class="win-note">
+    Windowsではインストール時に「PATHに追加」にチェックを入れてください（デフォルトで有効のはず）。インストール後にPowerShellで <code class="font-mono" style="font-size:11px;">code --version</code> を実行して確認できます。
+  </div>
+
+  <!-- Git -->
+  <h3>1-4. Git のインストールと初期設定</h3>
+  <p><strong>Git</strong>（ギット）はコードのバージョン管理ツールです。「いつでも前の状態に戻せる」安全装置として機能します。</p>
+
+  <p>Macの場合、Gitはすでに入っていることが多いです。確認してみましょう：</p>
+  <div class="cmd" onclick="copyCmd(this)"><span class="prompt">$ </span>git --version</div>
+
+  <div class="output-example">
+    <code class="font-mono" style="font-size:12px;">git version 2.x.x</code> と表示されれば、すでにインストール済みです。
+  </div>
+
+  <p>入っていない場合、Macでは以下を実行するとインストールが始まります：</p>
+  <div class="cmd" onclick="copyCmd(this)"><span class="prompt">$ </span>xcode-select --install</div>
+
+  <div class="win-note">
+    <a href="https://git-scm.com/downloads/win" target="_blank" rel="noopener">git-scm.com</a> からWindows用インストーラをダウンロードしてください。インストール時の設定は基本的にデフォルトでOKです。インストール後、PowerShellを開き直してから <code class="font-mono" style="font-size:11px;">git --version</code> で確認してください。
+  </div>
+
+  <p>Gitの初期設定として、ユーザー名とメールアドレスを登録します。これはコミット（変更記録）に表示される情報です：</p>
+
+  <div class="cmd" onclick="copyCmd(this)"><span class="prompt">$ </span>git config --global user.name "あなたの名前"</div>
+  <div class="cmd" onclick="copyCmd(this)"><span class="prompt">$ </span>git config --global user.email "あなたのメールアドレス"</div>
+
+  <div class="callout info">
+    <div class="callout-title">💡 GitHubと同じメールアドレスにする</div>
+    <p class="text-sm" style="margin-bottom:0;">
+      ここで設定するメールアドレスは、GitHubアカウントに登録したものと<strong>同じ</strong>にしてください。GitHubがコミットとアカウントを正しく紐づけるために必要です。
+    </p>
+  </div>
+
+  <!-- gh CLI -->
+  <h3>1-5. gh CLI のインストール</h3>
+  <p><strong>gh CLI</strong>（GitHub CLI）は、ターミナルからGitHubの操作ができるツールです。リポジトリの作成やPagesの設定をコマンドラインから行えます。</p>
+
+  <p><strong>Mac</strong>（Homebrewが入っている場合）：</p>
+  <div class="cmd" onclick="copyCmd(this)"><span class="prompt">$ </span>brew install gh</div>
+
+  <div class="callout tip">
+    <div class="callout-title">💡 Homebrewが入っていない場合</div>
+    <p class="text-sm" style="margin-bottom:0;">
+      Homebrew（ホームブリュー）はMac用のパッケージ管理ツールです。未インストールの場合は <a href="https://brew.sh/ja/" target="_blank" rel="noopener">brew.sh</a> の手順に従ってまずHomebrewを入れてから <code class="font-mono">brew install gh</code> を実行してください。Homebrewなしの場合は <a href="https://cli.github.com/" target="_blank" rel="noopener">cli.github.com</a> からインストーラをダウンロードすることもできます。
+    </p>
+  </div>
+
+  <div class="win-note">
+    <code class="font-mono" style="font-size:11px;">winget install --id GitHub.cli</code> で入ります。あるいは <a href="https://cli.github.com/" target="_blank" rel="noopener">cli.github.com</a> からインストーラをダウンロードしてください。
+  </div>
+
+  <p>インストール後、GitHubアカウントでログインします：</p>
+  <div class="cmd" onclick="copyCmd(this)"><span class="prompt">$ </span>gh auth login</div>
+
+  <p>対話形式でいくつか質問されます。以下のように選択してください：</p>
+  <table class="ref-table">
+    <thead><tr><th>質問</th><th>選択</th></tr></thead>
+    <tbody>
+      <tr><td>Where do you use GitHub?</td><td><strong>GitHub.com</strong></td></tr>
+      <tr><td>What is your preferred protocol for Git operations?</td><td><strong>HTTPS</strong></td></tr>
+      <tr><td>Authenticate Git with your GitHub credentials?</td><td><strong>Yes</strong></td></tr>
+      <tr><td>How would you like to authenticate GitHub CLI?</td><td><strong>Login with a web browser</strong></td></tr>
+    </tbody>
+  </table>
+
+  <p>ブラウザが開いてGitHubへのログインを求められます。承認すると、ターミナルに戻って完了です。</p>
+
+  <h3>インストール完了の確認</h3>
+  <p>すべてのツールが正しくインストールされたか、まとめて確認しましょう：</p>
+
+  <div class="cmd" onclick="copyCmd(this)"><span class="prompt">$ </span>node --version && npm --version && git --version && gh --version && claude --version</div>
+
+  <div class="output-example">
+    5つのバージョン情報がすべて表示されれば、インストールは完了です。エラーが出たツールがあれば、そのツールのインストール手順を見直してください。
+  </div>
+</section>
+
+<!-- ═══════════════ Step 2 ═══════════════ -->
+<section class="section" id="step2">
+  <div class="section-num">STEP 2</div>
+  <h2>プロジェクトを作成する</h2>
+  <p class="section-subtitle">作業フォルダを作り、GitリポジトリとGitHubリポジトリを準備する <span class="time-est">⏱ 5–10分</span></p>
+
+  <h3>2-1. プロジェクトフォルダの作成</h3>
+  <p>ターミナルで、日報ツールのプロジェクトフォルダを作ります。</p>
+
+  <div class="cmd" onclick="copyCmd(this)"><span class="prompt">$ </span>mkdir daily-report-tool && cd daily-report-tool</div>
+
+  <p><code class="font-mono">mkdir</code> はフォルダを作るコマンド、<code class="font-mono">cd</code> はそのフォルダに移動するコマンドです。</p>
+
+  <div class="win-note">
+    コマンドはMacと同じです。PowerShellで実行してください。
+  </div>
+
+  <h3>2-2. Gitリポジトリの初期化</h3>
+  <p>このフォルダをGitで管理できるようにします。</p>
+
+  <div class="cmd" onclick="copyCmd(this)"><span class="prompt">$ </span>git init</div>
+
+  <div class="output-example">
+    <code class="font-mono" style="font-size:12px;">Initialized empty Git repository in /Users/.../daily-report-tool/.git/</code>
+  </div>
+
+  <h3>2-3. GitHubにリモートリポジトリを作成</h3>
+  <p>gh CLI を使って、GitHubにリポジトリを作成し、ローカルと接続します。</p>
+
+  <div class="cmd" onclick="copyCmd(this)"><span class="prompt">$ </span>gh repo create daily-report-tool --public --source=. --remote=origin</div>
+
+  <p>このコマンドの意味：</p>
+  <table class="ref-table">
+    <thead><tr><th>部分</th><th>意味</th></tr></thead>
+    <tbody>
+      <tr><td><code class="font-mono text-sm">gh repo create</code></td><td>GitHubにリポジトリを作成する</td></tr>
+      <tr><td><code class="font-mono text-sm">daily-report-tool</code></td><td>リポジトリの名前</td></tr>
+      <tr><td><code class="font-mono text-sm">--public</code></td><td>公開リポジトリにする（GitHub Pagesに必要）</td></tr>
+      <tr><td><code class="font-mono text-sm">--source=.</code></td><td>現在のフォルダをソースとして使う</td></tr>
+      <tr><td><code class="font-mono text-sm">--remote=origin</code></td><td>「origin」という名前でGitHubとの接続を設定</td></tr>
+    </tbody>
+  </table>
+
+  <div class="output-example">
+    <code class="font-mono" style="font-size:12px;">✓ Created repository あなたのユーザー名/daily-report-tool on GitHub</code><br>
+    <code class="font-mono" style="font-size:12px;">✓ Added remote https://github.com/あなたのユーザー名/daily-report-tool.git</code>
+  </div>
+
+  <h3>2-4. 最初のコミットを作る</h3>
+  <p>Gitの基本的なルールとして、空のリポジトリには最初に何かしらのファイルをコミットしておきます。READMEファイルを作りましょう。</p>
+
+  <div class="cmd" onclick="copyCmd(this)"><span class="prompt">$ </span>echo "# 日報作成ツール" > README.md</div>
+  <div class="cmd" onclick="copyCmd(this)"><span class="prompt">$ </span>git add README.md</div>
+  <div class="cmd" onclick="copyCmd(this)"><span class="prompt">$ </span>git commit -m "Initial commit"</div>
+
+  <p>各コマンドの意味：</p>
+  <table class="ref-table">
+    <thead><tr><th>コマンド</th><th>何をしているか</th></tr></thead>
+    <tbody>
+      <tr><td><code class="font-mono text-sm">echo "..." > README.md</code></td><td>「日報作成ツール」というテキストでREADME.mdファイルを作成</td></tr>
+      <tr><td><code class="font-mono text-sm">git add README.md</code></td><td>ファイルを「次の記録に含める」リストに追加（ステージング）</td></tr>
+      <tr><td><code class="font-mono text-sm">git commit -m "..."</code></td><td>変更をメッセージ付きで記録する（コミット）</td></tr>
+    </tbody>
+  </table>
+
+  <h3>2-5. GitHubにプッシュする</h3>
+  <p>ローカルのコミットをGitHubに送信します。</p>
+
+  <div class="cmd" onclick="copyCmd(this)"><span class="prompt">$ </span>git branch -M main</div>
+  <div class="cmd" onclick="copyCmd(this)"><span class="prompt">$ </span>git push -u origin main</div>
+
+  <div class="output-example">
+    ブラウザで <code class="font-mono" style="font-size:12px;">https://github.com/あなたのユーザー名/daily-report-tool</code> を開くと、README.mdが表示されるはずです。
+  </div>
+
+  <h3>2-6. VS Codeでプロジェクトを開く</h3>
+  <p>ターミナルで以下を実行すると、VS Codeでプロジェクトが開きます。</p>
+
+  <div class="cmd" onclick="copyCmd(this)"><span class="prompt">$ </span>code .</div>
+
+  <p>左側のファイルエクスプローラにREADME.mdだけが表示されているはずです。ここにこれからファイルが増えていきます。</p>
+</section>
+
+<!-- ═══════════════ Step 3 ═══════════════ -->
+<section class="section" id="step3">
+  <div class="section-num">STEP 3</div>
+  <h2>CLAUDE.md を作成する</h2>
+  <p class="section-subtitle">Claude Codeにプロジェクトの文脈を伝える「指示書」を書く <span class="time-est">⏱ 5分</span></p>
+
+  <p>CLAUDE.mdは、Claude Codeがセッション開始時に自動で読み込むファイルです。ここに書いた内容がAIの「前提知識」になります。プロジェクトのルートに置きます。</p>
+
+  <div class="callout info">
+    <div class="callout-title">💡 CLAUDE.mdを先に作る理由</div>
+    <p class="text-sm" style="margin-bottom:0;">
+      Claude Codeを起動した時点でCLAUDE.mdが存在すると、最初の指示から正しい文脈で作業できます。後から追加しても効果はありますが、最初にあるほうが効率的です。
+    </p>
+  </div>
+
+  <h3>CLAUDE.md の内容</h3>
+  <p>以下の内容で CLAUDE.md を作成します。VS Codeで新規ファイルを作成するか、ターミナルで作成してください。</p>
+
+  <div class="code-block">
+    <span class="code-label">CLAUDE.md</span>
+    <pre><span class="comment"># 日報作成ツール</span>
+<span class="key">業務で使える日報作成Webアプリ。GitHub Pagesで静的サイトとしてホスティングする。</span>
+
+<span class="comment"># 技術スタック</span>
+- <span class="val">HTML / CSS / JavaScript（バニラ、フレームワークなし）</span>
+- <span class="val">データ保存: localStorage</span>
+- <span class="val">ホスティング: GitHub Pages（静的ファイルのみ）</span>
+
+<span class="comment"># 機能要件</span>
+- 日報入力フォーム（日付、今日やったこと、明日やること、困っていること、メモ）
+- localStorageへの保存・読み込み
+- 過去の日報の一覧表示
+- 日報テキストのクリップボードコピー（Slack/Teams貼付用）
+- 日報の削除
+
+<span class="comment"># ファイル構成方針</span>
+- <span class="key">index.html</span> — メインページ
+- <span class="key">css/style.css</span> — スタイル
+- <span class="key">js/app.js</span> — アプリケーションロジック
+- ファイルは分割して管理する（HTML/CSS/JSを混在させない）
+
+<span class="comment"># コーディング方針</span>
+- <span class="val">シンプルで読みやすいコードを優先する</span>
+- <span class="val">外部ライブラリは使わない（CDNも含め）</span>
+- <span class="val">モバイル対応（レスポンシブデザイン）</span>
+- <span class="val">日本語UIで統一</span>
+- <span class="val">アクセシビリティに配慮する（セマンティックHTML、ARIAラベル）</span>
+
+<span class="comment"># デザイン方針</span>
+- 業務ツールらしい落ち着いた配色
+- 余白を十分に取り、情報密度を抑える
+- フォントは sans-serif 系のシステムフォント</pre>
+  </div>
+
+  <p>ターミナルからファイルを作成する場合（VS Codeで作成してもOK）：</p>
+  <div class="cmd" onclick="copyCmd(this)"><span class="prompt">$ </span>touch CLAUDE.md</div>
+  <p>その後、VS Codeで <code class="font-mono">CLAUDE.md</code> を開いて上の内容をコピー＆ペーストし、保存（<kbd>⌘</kbd>+<kbd>S</kbd>）してください。</p>
+
+  <div class="callout tip">
+    <div class="callout-title">💡 「完璧でなくてよい」</div>
+    <p class="text-sm" style="margin-bottom:0;">
+      CLAUDE.mdは後からいくらでも更新できます。まずはこの最小限の内容で始めて、Claude Codeを使いながら「こういう指示も必要だったな」と気づいた点を追記していくのが、最も実践的な育て方です。
+    </p>
+  </div>
+</section>
+
+<!-- ═══════════════ Step 4 ═══════════════ -->
+<section class="section" id="step4">
+  <div class="section-num">STEP 4</div>
+  <h2>Claude Code で日報ツールを開発する</h2>
+  <p class="section-subtitle">AIと対話しながら、日報ツールのコードを生成する <span class="time-est">⏱ 20–30分</span></p>
+
+  <p>いよいよClaude Codeを使ってコードを書いていきます。ここが本チュートリアルの核心です。</p>
+
+  <div class="callout warn">
+    <div class="callout-title">⚠ 重要：ブランチを切ってから作業する</div>
+    <p class="text-sm" style="margin-bottom:0;">
+      AIにコードを書かせる前に、必ず新しいブランチ（作業用の分岐）を作ります。何か問題が起きても、ブランチごと捨てれば元の状態に戻せます。これがAIコーディングにおける<strong>最も重要な安全習慣</strong>です。
+    </p>
+  </div>
+
+  <h3>4-1. 作業ブランチを作成する</h3>
+  <div class="cmd" onclick="copyCmd(this)"><span class="prompt">$ </span>git checkout -b feature/daily-report-app</div>
+
+  <div class="output-example">
+    <code class="font-mono" style="font-size:12px;">Switched to a new branch 'feature/daily-report-app'</code><br>
+    これで、mainブランチとは独立した作業場所ができました。
+  </div>
+
+  <h3>4-2. Claude Code を起動する</h3>
+  <p>プロジェクトフォルダにいることを確認してから、Claude Codeを起動します。</p>
+
+  <div class="cmd" onclick="copyCmd(this)"><span class="prompt">$ </span>claude</div>
+
+  <p>Claude Codeが起動し、CLAUDE.mdの内容を自動的に読み込みます。入力プロンプトが表示されたら準備完了です。</p>
+
+  <h3>4-3. まず計画を立てる（Plan Mode）</h3>
+  <p>いきなりコードを書かせるのではなく、まず<strong>計画を確認</strong>します。<kbd>Shift</kbd>+<kbd>Tab</kbd> を2回押して Plan Mode に切り替えてから、以下のように入力してください。</p>
+
+  <div class="ai-prompt">
+    <div class="ai-label">📝 CLAUDE CODE に入力するプロンプト（計画フェーズ）</div>
+    <pre>日報作成ツールの実装計画を立ててください。
+
+以下の機能を含むWebアプリを作ります：
+1. 日報入力フォーム（日付、今日やったこと、明日やること、困っていること、メモ）
+2. 入力した日報をlocalStorageに保存
+3. 過去の日報を一覧表示（日付の新しい順）
+4. 各日報をテキスト形式でクリップボードにコピーする機能
+5. 日報の削除機能
+
+ファイル構成は CLAUDE.md に記載の通りです。
+実装のステップを3〜5個に分割して、各ステップの完了条件を示してください。
+コードはまだ書かないでください。</pre>
+  </div>
+
+  <p>Claude Codeが実装計画を提案してくれます。内容を確認して、問題なければ次に進みます。計画に対して「ステップ2にバリデーションも含めて」のような修正指示を出すこともできます。</p>
+
+  <div class="callout tip">
+    <div class="callout-title">💡 Plan Mode の意味</div>
+    <p class="text-sm" style="margin-bottom:0;">
+      Plan Modeでは、Claude Codeはファイルの変更ができません。調査・分析・計画の提案のみを行います。「考える」と「実行する」を分けることで、意図しないコード変更を防ぎ、人間が計画を確認してから実装に移れます。
+    </p>
+  </div>
+
+  <h3>4-4. ステップごとに実装する</h3>
+  <p>計画を確認したら、<kbd>Shift</kbd>+<kbd>Tab</kbd> を2回押してPlan Modeを解除し、実装を依頼します。</p>
+
+  <div class="ai-prompt">
+    <div class="ai-label">📝 CLAUDE CODE に入力するプロンプト（実装フェーズ）</div>
+    <pre>それでは、先ほどの計画に沿って実装を始めてください。
+
+まずステップ1から始めてください。
+各ステップが完了したら、動作確認の方法を教えてください。
+一度にすべてを作るのではなく、ステップごとに確認しながら進めます。</pre>
+  </div>
+
+  <p>Claude Codeがファイルを作成し始めます。ファイルの作成や編集の許可を求められたら、内容を確認して承認してください。</p>
+
+  <div class="callout info">
+    <div class="callout-title">💡 許可のプロンプトについて</div>
+    <p class="text-sm" style="margin-bottom:0;">
+      Claude Codeはファイルを作成・編集する前に許可を求めてきます。表示されたファイル名と変更内容を確認してから <code class="font-mono">y</code>（yes）で承認してください。よくわからない変更であれば <code class="font-mono">n</code>（no）で拒否できます。
+    </p>
+  </div>
+
+  <h3>4-5. 動作確認する</h3>
+  <p>各ステップの実装後に、ブラウザで動作を確認します。静的なHTML/CSS/JSのプロジェクトなので、index.htmlをブラウザで直接開けます。</p>
+
+  <div class="cmd" onclick="copyCmd(this)"><span class="prompt">$ </span>open index.html</div>
+
+  <div class="win-note">
+    <code class="font-mono" style="font-size:11px;">start index.html</code> で既定のブラウザが開きます。あるいは、VS Codeの拡張機能「Live Server」をインストールすると、ファイルを保存するたびにブラウザが自動更新される環境が作れます。
+  </div>
+
+  <p>動作確認のポイント：</p>
+  <ul class="checklist" data-group="verify">
+    <li>
+      <span class="q">ページが正常に表示されるか</span>
+      <span class="hint">レイアウト崩れ、文字化け、真っ白なページなどがないか</span>
+    </li>
+    <li>
+      <span class="q">フォームに入力して保存できるか</span>
+      <span class="hint">各項目に文字を入れて保存ボタンを押し、エラーが出ないか</span>
+    </li>
+    <li>
+      <span class="q">保存した日報が一覧に表示されるか</span>
+      <span class="hint">ページをリロードしても一覧が保持されるか（localStorageの確認）</span>
+    </li>
+    <li>
+      <span class="q">コピー機能が動作するか</span>
+      <span class="hint">コピーボタンを押して、テキストエディタに貼り付けてみる</span>
+    </li>
+  </ul>
+
+  <h3>4-6. 問題があれば Claude Code に修正を依頼する</h3>
+  <p>動作確認で問題が見つかった場合、Claude Codeにそのまま伝えれば修正してくれます。</p>
+
+  <div class="ai-prompt">
+    <div class="ai-label">📝 修正依頼の例</div>
+    <pre>日報を保存した後、フォームの入力内容がクリアされません。
+保存成功後にフォームをリセットしてください。</pre>
+  </div>
+
+  <p>あるいは：</p>
+
+  <div class="ai-prompt">
+    <div class="ai-label">📝 修正依頼の例</div>
+    <pre>スマートフォンの画面幅で見ると、フォームがはみ出しています。
+モバイル対応のレスポンシブデザインを修正してください。</pre>
+  </div>
+
+  <div class="callout tip">
+    <div class="callout-title">💡 「何が起きているか」を具体的に伝える</div>
+    <p class="text-sm" style="margin-bottom:0;">
+      「動きません」より「保存ボタンを押すとコンソールに "TypeError: Cannot read property 'value' of null" というエラーが出ます」のほうが、AIは正確に対処できます。もしエラーメッセージが出ていたら、そのままコピーして貼り付けてください。
+    </p>
+  </div>
+
+  <h3>4-7. 実装が完了したら</h3>
+  <p>すべての機能が動作することを確認したら、Claude Codeのセッションをクリアします。</p>
+
+  <div class="cmd" onclick="copyCmd(this)"><span class="prompt">&gt; </span>/clear</div>
+
+  <p>これでコンテキストがリセットされ、次のタスクに新鮮な状態で臨めます。CLAUDE.mdの内容は保持されます。</p>
+
+  <h3>完成時のファイル構成（参考）</h3>
+  <p>Claude Codeの出力によって多少異なりますが、おおむね以下のような構成になるはずです。</p>
+
+  <div class="file-tree">
+    <span class="dir">daily-report-tool/</span><br>
+    ├── <span class="file">CLAUDE.md</span> <span class="desc">← AIへの指示書</span><br>
+    ├── <span class="file">README.md</span> <span class="desc">← プロジェクト説明</span><br>
+    ├── <span class="file">index.html</span> <span class="desc">← メインページ</span><br>
+    ├── <span class="dir">css/</span><br>
+    │   └── <span class="file">style.css</span> <span class="desc">← スタイル</span><br>
+    └── <span class="dir">js/</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;└── <span class="file">app.js</span> <span class="desc">← アプリロジック</span>
+  </div>
+</section>
+
+<!-- ═══════════════ Step 5 ═══════════════ -->
+<section class="section" id="step5">
+  <div class="section-num">STEP 5</div>
+  <h2>レビューしてコミットする</h2>
+  <p class="section-subtitle">AIが書いたコードを確認し、Gitに記録してGitHubにプッシュする <span class="time-est">⏱ 5–10分</span></p>
+
+  <h3>5-1. VS Code で変更を確認する</h3>
+  <p>VS Codeの左サイドバーにある<strong>ソース管理アイコン</strong>（分岐のような形のアイコン）をクリックすると、変更されたファイルの一覧が表示されます。</p>
+
+  <p>各ファイルをクリックすると、変更前後の<strong>差分</strong>（Diff）が色付きで表示されます。緑色が追加された行、赤色が削除された行です。</p>
+
+  <div class="callout info">
+    <div class="callout-title">💡 レビューのポイント</div>
+    <p class="text-sm" style="margin-bottom:0;">
+      すべてのコードを完全に理解する必要はありませんが、以下の点は確認しておくと安心です：<br>
+      ・意図しないファイルが変更されていないか<br>
+      ・HTMLの構造が読み取れる程度に整理されているか<br>
+      ・明らかに不要なコード（テスト用のconsole.logなど）が残っていないか
+    </p>
+  </div>
+
+  <h3>5-2. ターミナルでも確認する</h3>
+  <p>ターミナルからも変更の概要を確認できます。</p>
+
+  <div class="cmd" onclick="copyCmd(this)"><span class="prompt">$ </span>git status</div>
+
+  <p>変更されたファイルの一覧が表示されます。</p>
+
+  <div class="cmd" onclick="copyCmd(this)"><span class="prompt">$ </span>git diff</div>
+
+  <p>各ファイルの変更内容が詳細に表示されます（<kbd>q</kbd> キーで終了）。</p>
+
+  <h3>5-3. 変更をコミットする</h3>
+  <p>確認が済んだら、すべての変更をステージング（コミット対象に含める）してコミットします。</p>
+
+  <div class="cmd" onclick="copyCmd(this)"><span class="prompt">$ </span>git add .</div>
+  <div class="cmd" onclick="copyCmd(this)"><span class="prompt">$ </span>git commit -m "feat: 日報作成ツールの初期実装"</div>
+
+  <p><code class="font-mono">git add .</code> の <code class="font-mono">.</code>（ドット）は「現在のフォルダ内のすべての変更」を意味します。</p>
+
+  <h3>5-4. GitHubにプッシュする</h3>
+  <div class="cmd" onclick="copyCmd(this)"><span class="prompt">$ </span>git push -u origin feature/daily-report-app</div>
+
+  <div class="output-example">
+    GitHubにブランチがプッシュされます。この時点で、GitHubのリポジトリページにアクセスすると、新しいブランチが作成されていることが確認できます。
+  </div>
+
+  <h3>5-5. mainブランチにマージする</h3>
+  <p>作業ブランチの内容をmainブランチに統合します。</p>
+
+  <div class="cmd" onclick="copyCmd(this)"><span class="prompt">$ </span>git checkout main</div>
+  <div class="cmd" onclick="copyCmd(this)"><span class="prompt">$ </span>git merge feature/daily-report-app</div>
+  <div class="cmd" onclick="copyCmd(this)"><span class="prompt">$ </span>git push origin main</div>
+
+  <p>各コマンドの意味：</p>
+  <table class="ref-table">
+    <thead><tr><th>コマンド</th><th>何をしているか</th></tr></thead>
+    <tbody>
+      <tr><td><code class="font-mono text-sm">git checkout main</code></td><td>mainブランチに戻る</td></tr>
+      <tr><td><code class="font-mono text-sm">git merge feature/...</code></td><td>作業ブランチの変更をmainに統合する</td></tr>
+      <tr><td><code class="font-mono text-sm">git push origin main</code></td><td>統合結果をGitHubに送信する</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout tip">
+    <div class="callout-title">💡 プルリクエスト（PR）を使う方法もある</div>
+    <p class="text-sm" style="margin-bottom:0;">
+      実務やチーム開発では、直接マージするのではなく「プルリクエスト」を作成してレビューしてからマージするのが一般的です。今回は学習のためにシンプルな直接マージを採用していますが、慣れてきたら <code class="font-mono">gh pr create</code> でPRを作成するワークフローも試してみてください。
+    </p>
+  </div>
+</section>
+
+<!-- ═══════════════ Step 6 ═══════════════ -->
+<section class="section" id="step6">
+  <div class="section-num">STEP 6</div>
+  <h2>GitHub Pages で公開する</h2>
+  <p class="section-subtitle">GitHubの無料ホスティング機能で、日報ツールをインターネットに公開する <span class="time-est">⏱ 5分</span></p>
+
+  <p>GitHub Pagesは、GitHubリポジトリの内容をそのままWebサイトとして公開できる無料のホスティングサービスです。静的ファイル（HTML/CSS/JS）をそのまま配信できるため、今回の日報ツールに最適です。</p>
+
+  <h3>6-1. GitHub Pages を有効化する</h3>
+  <p>gh CLIを使って設定します：</p>
+
+  <div class="cmd" onclick="copyCmd(this)"><span class="prompt">$ </span>gh api repos/{owner}/{repo}/pages -X POST -f "build_type=workflow" -f "source[branch]=main" -f "source[path]=/" 2>/dev/null || echo "Pages may already be enabled or use the web UI below"</div>
+
+  <div class="callout info">
+    <div class="callout-title">💡 ブラウザから設定する方法（より確実）</div>
+    <p class="text-sm" style="margin-bottom:0;">
+      gh CLIでうまくいかない場合は、ブラウザからの設定が確実です：<br>
+      1. <code class="font-mono">https://github.com/あなたのユーザー名/daily-report-tool/settings/pages</code> を開く<br>
+      2. 「Source」で <strong>Deploy from a branch</strong> を選択<br>
+      3. Branch を <strong>main</strong>、フォルダを <strong>/ (root)</strong> に設定<br>
+      4. 「Save」をクリック
+    </p>
+  </div>
+
+  <h3>6-2. 公開を確認する</h3>
+  <p>設定後、1〜2分ほど待つとサイトが公開されます。以下のURLでアクセスできます：</p>
+
+  <div class="code-block">
+    <pre>https://<span class="highlight">あなたのユーザー名</span>.github.io/<span class="highlight">daily-report-tool</span>/</pre>
+  </div>
+
+  <p>公開状態はGitHubリポジトリのActionsタブで確認できます：</p>
+  <div class="cmd" onclick="copyCmd(this)"><span class="prompt">$ </span>gh run list --limit 3</div>
+
+  <div class="output-example">
+    <code class="font-mono" style="font-size:12px;">STATUS  TITLE                         BRANCH</code><br>
+    <code class="font-mono" style="font-size:12px;">✓       pages build and deployment     main</code><br>
+    ステータスが ✓（チェックマーク）になっていれば、デプロイ完了です。
+  </div>
+
+  <div class="trouble">
+    ページが表示されない場合：<br>
+    ・URLの大文字小文字を確認してください（GitHubのユーザー名は小文字で入力）<br>
+    ・Actionsタブでビルドがまだ実行中かもしれません。数分待ってみてください<br>
+    ・<code class="font-mono" style="font-size:11px;">index.html</code> がリポジトリのルート（最上位）に存在するか確認してください
+  </div>
+
+  <h3>6-3. 動作確認</h3>
+  <p>公開されたURLにアクセスして、以下を確認します：</p>
+
+  <ul class="checklist" data-group="deploy">
+    <li>
+      <span class="q">ページが正常に表示される</span>
+      <span class="hint">CSSが適用されて、レイアウトが崩れていないか</span>
+    </li>
+    <li>
+      <span class="q">日報の入力と保存ができる</span>
+      <span class="hint">フォームに入力して保存し、ページをリロードしても表示されるか</span>
+    </li>
+    <li>
+      <span class="q">スマートフォンでも使える</span>
+      <span class="hint">スマホのブラウザでURLを開くか、PCブラウザの開発者ツールでモバイル表示を確認</span>
+    </li>
+    <li>
+      <span class="q">コピー機能が動作する</span>
+      <span class="hint">コピーした内容をSlackやメモ帳に貼り付けて確認</span>
+    </li>
+  </ul>
+
+  <div class="card-grid">
+    <div class="card green" style="grid-column: 1 / -1;">
+      <div class="card-icon">🎉</div>
+      <div class="card-title green-t" style="font-size:18px;">おめでとうございます！</div>
+      <div class="card-desc" style="font-size:14px;">
+        Claude Codeを使って日報作成ツールを開発し、GitHub Pagesで公開するところまで完了しました。<br>
+        AIコーディングの基本的なサイクル — 計画 → 実装 → 確認 → コミット → 公開 — を一通り体験できたことになります。
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ Wrap-up ═══════════════ -->
+<section class="section" id="wrapup">
+  <div class="section-num">WRAP-UP</div>
+  <h2>まとめと次のステップ</h2>
+  <p class="section-subtitle">このチュートリアルで身につけたことと、ここから先の学び方</p>
+
+  <h3>このチュートリアルで体験したこと</h3>
+  <div class="concept-flow-5">
+    <div class="concept-box">
+      <div class="label">SETUP</div>
+      <div class="name">環境構築</div>
+    </div>
+    <div class="concept-arrow">→</div>
+    <div class="concept-box">
+      <div class="label">CONTEXT</div>
+      <div class="name">CLAUDE.md</div>
+    </div>
+    <div class="concept-arrow">→</div>
+    <div class="concept-box" style="border-color: var(--accent);">
+      <div class="label" style="color:var(--accent);">BUILD</div>
+      <div class="name" style="color:var(--accent);">AI開発</div>
+    </div>
+    <div class="concept-arrow">→</div>
+    <div class="concept-box">
+      <div class="label">REVIEW</div>
+      <div class="name">レビュー</div>
+    </div>
+    <div class="concept-arrow">→</div>
+    <div class="concept-box">
+      <div class="label">DEPLOY</div>
+      <div class="name">公開</div>
+    </div>
+  </div>
+
+  <h3>身についたスキル</h3>
+  <table class="ref-table">
+    <thead><tr><th>カテゴリ</th><th>具体的なスキル</th></tr></thead>
+    <tbody>
+      <tr><td><span class="tag tag-env">ツール操作</span></td><td>ターミナルの基本操作、Claude Codeの起動と対話、VS Codeでのコード確認</td></tr>
+      <tr><td><span class="tag tag-ctx">コンテキスト</span></td><td>CLAUDE.mdの作成、Plan Modeの活用、/clearでのリセット</td></tr>
+      <tr><td><span class="tag tag-cmd">Git操作</span></td><td>リポジトリの初期化、ブランチ作成、add/commit/push、マージ</td></tr>
+      <tr><td><span class="tag tag-ext">GitHub</span></td><td>リポジトリ作成（gh CLI）、GitHub Pagesでの公開</td></tr>
+      <tr><td><span class="tag tag-tool">AIとの協働</span></td><td>計画→実装の2段階ワークフロー、修正依頼の出し方、動作確認の習慣</td></tr>
+    </tbody>
+  </table>
+
+  <h3>次に試してみること</h3>
+  <div class="card-grid">
+    <div class="card blue">
+      <div class="card-icon">🔧</div>
+      <div class="card-title blue-t">日報ツールの機能を追加する</div>
+      <div class="card-desc">
+        検索・フィルタ機能、カテゴリタグ、CSVエクスポート、テーマ切替（ダークモード）など。Claude Codeに追加機能を依頼して、開発サイクルをもう一度回してみる
+      </div>
+    </div>
+    <div class="card purple">
+      <div class="card-icon">📝</div>
+      <div class="card-title purple-t">CLAUDE.md を育てる</div>
+      <div class="card-desc">
+        Claude Codeが間違えたパターンを記録していく。「Supabaseクライアントは createServerClient を使う」のような、プロジェクト固有の学びを蓄積する
+      </div>
+    </div>
+    <div class="card green">
+      <div class="card-icon">🌱</div>
+      <div class="card-title green-t">別のプロジェクトに挑戦する</div>
+      <div class="card-desc">
+        ポートフォリオサイト、タスク管理アプリ、読書記録アプリなど。同じワークフロー（Plan → Implement → Review → Commit → Deploy）で別のものを作ってみる
+      </div>
+    </div>
+    <div class="card orange">
+      <div class="card-icon">📖</div>
+      <div class="card-title orange-t">コンパニオンガイドを深読みする</div>
+      <div class="card-desc">
+        <a href="/" style="color:var(--orange);">AI Coding Companion Guide</a> のコンテキスト管理、拡張機能、情報管理のセクションで、今回体験したことの「なぜそうするのか」を理解する
+      </div>
+    </div>
+  </div>
+
+  <h3>大事な心構え</h3>
+  <div class="epigraph">
+    <p>AIコーディングは「一度のプロンプトで完璧なコードが出てくる」ものではない。</p>
+    <p>計画し、試し、確認し、修正する。その反復のなかでプロジェクトが形になっていく。</p>
+    <p>AIは道具であり、何を作るか・なぜ作るかの判断は、常にあなた自身のものです。</p>
+  </div>
+
+  <div class="deepdive">
+    <div class="dd-label">🤖 AI DEEP DIVE PROMPT</div>
+    <div class="dd-title">このチュートリアルの次にClaude Codeと何を学ぶべきか聞いてみる</div>
+    <code onclick="copyPrompt(this)">私はClaude Codeの初学者で、GitHub Pagesのチュートリアルを終えたところです。
+以下のことができるようになりました：
+- CLAUDE.mdの作成
+- Plan Mode → 実装の2段階ワークフロー
+- Git/GitHubの基本操作
+- GitHub Pagesでの公開
+
+次のステップとして、以下の方向性を検討しています：
+1. 既存のプロジェクトに機能を追加する練習
+2. フレームワーク（Next.jsなど）を使ったプロジェクト
+3. Claude Codeの拡張機能（Skills, Subagents, Hooks）の活用
+
+私の関心：[あなたの興味や目的]
+スキルレベル：HTML/CSS/JSの基礎は今回のチュートリアルで一通り触れた程度
+
+3つの方向性それぞれについて、具体的な「次の1プロジェクト」を提案してください。
+各提案には、なぜそれが学習効果が高いかの理由も添えてください。</code>
+  </div>
+</section>
+
+</main>
+
+<div id="sr-announcer" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+
+<!-- ═══════════════ Footer ═══════════════ -->
+<footer class="footer">
+  <div class="footer-inner">
+    <p><strong>公開情報</strong></p>
+    <p>
+      バージョン: v0.1.0<br>
+      最終更新: 2026-02-18<br>
+      更新方針: 必要時に随時更新<br>
+    </p>
+    <p><strong>関連ガイド</strong></p>
+    <p>
+      AIとのコーディングの知識地図 — <a href="/">AI Coding Companion Guide</a><br>
+      コードを書く前に考えるべきこと — <a href="https://hirokioshiro.github.io/vibe_coding_preflight_guide/" target="_blank" rel="noopener">Vibe Coding Preflight Guide</a><br>
+      「どう作るか」を考える — <a href="https://hirokioshiro.github.io/software_design_guide/" target="_blank" rel="noopener">Software Design Guide</a>
+    </p>
+    <p><strong>参照元</strong></p>
+    <p>
+      Anthropic「Claude Code Documentation」—
+      <a href="https://code.claude.com/docs" target="_blank" rel="noopener">code.claude.com</a><br>
+      GitHub「GitHub Pages Documentation」—
+      <a href="https://docs.github.com/pages" target="_blank" rel="noopener">docs.github.com</a>
+    </p>
+    <p style="margin-top:16px;">
+      本チュートリアルは「AI Coding Companion Guide」の実践編として、Claude Codeを使った開発の一連の流れを体験できるように構成しています。
+      Claude Codeは急速に進化しているため、最新情報は公式ドキュメントを確認してください。
+    </p>
+  </div>
+</footer>
+
+<script>
+// ─── Tutorial-specific scripts ───
+const announcer = document.getElementById('sr-announcer');
+function announce(message) {
+  if (!announcer) return;
+  announcer.textContent = '';
+  requestAnimationFrame(() => { announcer.textContent = message; });
+}
+
+async function writeClipboard(text) {
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    await navigator.clipboard.writeText(text);
+    return;
+  }
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.setAttribute('readonly', '');
+  ta.style.position = 'absolute';
+  ta.style.left = '-9999px';
+  document.body.appendChild(ta);
+  ta.select();
+  document.execCommand('copy');
+  document.body.removeChild(ta);
+}
+
+// Copy command blocks (strip prompt prefix)
+async function copyCmd(el) {
+  try {
+    const text = el.textContent.replace(/^\$ /, '').replace(/^> /, '').replace('📋', '').replace('✓', '').trim();
+    await writeClipboard(text);
+    el.classList.add('copied');
+    setTimeout(() => el.classList.remove('copied'), 1500);
+    announce('コマンドをコピーしました');
+  } catch { announce('コピーに失敗しました'); }
+}
+window.copyCmd = copyCmd;
+
+// Copy deepdive prompts (reuse pattern from main site)
+async function copyPrompt(element) {
+  try {
+    const text = element.textContent
+      .replace('📋 クリックでコピー', '')
+      .replace('✓ コピーしました', '')
+      .trim();
+    await writeClipboard(text);
+    element.classList.add('copied');
+    setTimeout(() => element.classList.remove('copied'), 1500);
+    announce('プロンプトをコピーしました');
+  } catch { announce('コピーに失敗しました'); }
+}
+window.copyPrompt = copyPrompt;
+
+// Checklist toggle
+function toggleChecklistItem(item) {
+  item.classList.toggle('checked');
+  const checked = item.classList.contains('checked');
+  item.setAttribute('aria-pressed', String(checked));
+  const label = item.querySelector('.q')?.textContent?.trim();
+  announce(`${label || 'チェック項目'}を${checked ? '完了' : '未完了'}にしました`);
+}
+document.querySelectorAll('.checklist li').forEach((li) => {
+  li.setAttribute('role', 'button');
+  li.setAttribute('tabindex', '0');
+  li.setAttribute('aria-pressed', String(li.classList.contains('checked')));
+  li.addEventListener('click', () => toggleChecklistItem(li));
+  li.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleChecklistItem(li); }
+  });
+});
+
+// TOC active state
+const sections = document.querySelectorAll('.section[id]');
+const links = document.querySelectorAll('.toc-link');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((entry) => {
+    if (entry.isIntersecting) {
+      links.forEach((l) => l.classList.remove('active'));
+      const active = document.querySelector(`.toc-link[href="#${entry.target.id}"]`);
+      if (active) active.classList.add('active');
+    }
+  });
+}, { rootMargin: '-80px 0px -60% 0px' });
+sections.forEach((s) => observer.observe(s));
+
+// Deepdive code blocks keyboard support
+document.querySelectorAll('.deepdive code').forEach((el) => {
+  el.setAttribute('role', 'button');
+  el.setAttribute('tabindex', '0');
+  el.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); copyPrompt(el); }
+  });
+});
+</script>
+</body>
+</html>

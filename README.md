@@ -5,6 +5,7 @@ GitHub Pages（ユーザーサイト）向けの単一ページ静的サイト�
 ## ファイル構成
 
 - `index.html`: 本文（構造とコンテンツ）
+- `tutorial.html`: ハンズオンチュートリアル（日報ツール開発）
 - `assets/css/main.css`: スタイル
 - `assets/js/main.js`: インタラクション（コピー機能、目次アクティブ表示、チェックリスト）
 - `assets/images/ogp-default.svg`: OGP/Twitterカード用画像
